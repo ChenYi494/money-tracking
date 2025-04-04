@@ -10,9 +10,7 @@ app = Flask(__name__)
 CORS(app)  # 允許所有來源的請求
 
 # 用的是external url
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://money_demo2_db_user:1z0KPUnXzm6AXLwD9VYmkGYTZNf4uHig@dpg-cvn85kfgi27c73bii1jg-a.oregon-postgres.render.com/money_demo2_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:workkk9130@127.0.0.1:5432/money_tracking'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://money_demo2_db_user:1z0KPUnXzm6AXLwD9VYmkGYTZNf4uHig@dpg-cvn85kfgi27c73bii1jg-a.oregon-postgres.render.com/money_demo2_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化資料庫
