@@ -1,0 +1,101 @@
+.all {
+  width: 100%;
+  border-radius: 12px;
+  background-color: #ede0d4;
+
+  // 標題
+  .title {
+    width: 100%;
+    height: 50px;
+    background-color: #d5bdaf;
+    border-radius: 12px 12px 0 0;
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 0;
+      text-align: center;
+      line-height: 50px;
+      color: #011e4d;
+    }
+  }
+
+  // 內容
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 100px);
+    padding: 16px 10px 10px;
+    overflow: auto;
+
+    .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 75px;
+
+      .section {
+        width: 80%;
+        height: 36px;
+
+        .data-seclect {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  input {
+    width: 80%;
+    height: 32px;
+    padding-left: 9px;
+    border: 1px solid #adb5bd;
+    border-radius: 6px;
+  }
+
+  input:focus {
+    outline: none;
+    border: 1px solid #011e4d;
+  }
+
+  input::placeholder {
+    color: #adb5bd;
+  }
+
+  // 按鈕
+  .button-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    padding-right: 6px; // 待調整
+    padding-bottom: 16px; // 待調整
+
+    button {
+      border: 1px solid #000;
+    }
+  }
+}
+
+
+// 待調整
+::ng-deep {
+
+  // modal設定
+  .ant-modal-body {
+    border-radius: 12px;
+    padding: 0;
+  }
+
+  .ant-modal-content {
+    border-radius: 12px;
+  }
+
+  .ant-modal-close-x {
+    display: none;
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "ui_configs": [
+    {
+      "name": "綜合分析",
+      "router": "analyze",
+      "page_configs": {
+        "components": [
+          {
+            "id": 1,
+            "class": "item1"
+          },
+          {
+            "id": 2,
+            "class": "item2"
+          },
+          {
+            "id": 3,
+            "class": "item3"
+          },
+          {
+            "id": 4,
+            "class": "item4"
+          },
+          {
+            "id": 5,
+            "class": "item5"
+          },
+          {
+            "id": 6,
+            "class": "item6"
+          },
+          {
+            "id": 7,
+            "class": "item7"
+          },
+          {
+            "id": 8,
+            "class": "item8"
+          },
+          {
+            "id": 9,
+            "class": "item9"
+          },
+          {
+            "id": 10,
+            "class": "item10"
+          },
+          {
+            "id": 11,
+            "class": "item11"
+          },
+          {
+            "id": 12,
+            "class": "item12"
+          }
+        ]
+      },
+      "child_page": []
+    }
+  ]
+}

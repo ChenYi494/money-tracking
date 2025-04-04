@@ -1,0 +1,56 @@
+.custom-list {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  gap: 20px;
+
+  .custom-container {
+    flex: 1 1 auto;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+
+    &::-webkit-scrollbar-thumb,
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+}
+
+::ng-deep {
+  .custom-container {
+    [class^='item'] {
+      display: block;
+      width: 100%;
+      cursor: pointer;
+
+      &:not(:first-child) {
+        margin-top: 20px;
+      }
+    }
+
+    >.item1 {
+      height: 250px;
+    }
+
+    >.item2 {
+      height: 250px;
+    }
+
+    >.item3 {
+      height: 250px;
+    }
+  }
+
+  .ant-drawer-content {
+    background-color: transparent;
+
+    .ant-drawer-body {
+      background: #003f88;
+      border-radius: 10px 0 0 10px;
+    }
+  }
+}

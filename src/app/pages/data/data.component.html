@@ -1,0 +1,12 @@
+<div class="data" [ngClass]="menuSetting()">
+  <div class="tab-section">
+    <div class="container">
+      @for (tab of allTheme; track tab) {
+      <div (click)="selectType(tab)" class="tab-item" [ngClass]="{'clicked': selectedTheme === tab}">{{ tab }}</div>
+      }
+    </div>
+  </div>
+  <div class="data-section">
+    <app-record-form [selectedTheme]="selectedTheme"></app-record-form>
+  </div>
+</div>

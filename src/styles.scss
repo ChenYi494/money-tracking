@@ -1,0 +1,139 @@
+// global style
+
+// 全域預設重置樣式/統一設定，避免各元件一直寫相同的設定
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(108, 117, 125, 0.25); // 滾動條背景
+  border-radius: 36px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #6c757d; // 滾動條本身
+  border-radius: 36px;
+}
+
+// 各類型共用按鈕
+// 一般按鈕
+.btn {
+  width: 60px;
+  height: 36px;
+  font-size: 18px;
+  border-radius: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  color: #011e4d;
+
+  &:hover {
+    background-color: #011e4d;
+    border: 1px solid #f8f9fa;
+    color: #f8f9fa;
+  }
+}
+
+// 模式切換按鈕
+.btn2 {
+  width: 100px;
+  height: 36px;
+  font-size: 18px;
+  border-radius: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  color: #011e4d;
+
+  &:hover {
+    background-color: #011e4d;
+    border: 1px solid #f8f9fa;
+    color: #f8f9fa;
+  }
+}
+
+// 動態生成grid排版
+.dynamic-section {
+  display: grid;
+  width: 100%;
+  height: calc(100% - 60px);
+  // border: 1px solid #f10;
+  padding: 20px;
+  grid-gap: 16px;
+  grid-template-columns: repeat(6, minmax(180px, 1fr));
+  grid-template-rows: repeat(3, minmax(180px, 1fr));
+  overflow-x: auto;
+  overflow-y: auto;
+
+  [class*='item'] {
+    z-index: 1;
+  }
+
+  .item1 {
+    grid-area: item1;
+  }
+
+  .item2 {
+    grid-area: item2;
+  }
+
+  .item3 {
+    grid-area: item3;
+  }
+
+  .item4 {
+    grid-area: item4;
+  }
+
+  .item5 {
+    grid-area: item5;
+  }
+
+  .item6 {
+    grid-area: item6;
+  }
+
+  .item7 {
+    grid-area: item7;
+  }
+
+  .item8 {
+    grid-area: item8;
+  }
+
+  .item9 {
+    grid-area: item9;
+  }
+
+  .item10 {
+    grid-area: item10;
+  }
+
+  .item11 {
+    grid-area: item11;
+  }
+
+  .item12 {
+    grid-area: item12;
+  }
+
+  .item13 {
+    grid-area: item13;
+  }
+
+  &.type1 {
+    grid-template-areas:
+      'item4 item1 item2 item3 item11 item12'
+      'item7 item7 item8 item8 item11 item12'
+      'item9 item9 item10 item10 item6 item5';
+  }
+}

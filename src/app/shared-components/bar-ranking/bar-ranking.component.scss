@@ -1,0 +1,77 @@
+.all {
+  width: 100%;
+  height: 100%;
+
+  // 柱狀圖區塊
+  .data-section {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    .each-data {
+      width: 100%;
+      height: 50px;
+      display: flex;
+
+      // 左側柱狀圖
+      .left {
+        position: relative;
+        width: 65%;
+
+        @media(max-width: 1600px) {
+          width: 55%;
+        }
+
+        h1 {
+          color: #fff;
+          font-family: "Noto Sans CJK TC";
+          font-size: 16px;
+          font-weight: 400;
+          margin-bottom: 0;
+        }
+
+        .bar {
+          position: absolute;
+          top: 30px;
+          left: 0;
+          height: 12px;
+          border-radius: 8px;
+        }
+
+        .bar-full {
+          z-index: 999;
+          width: 100%;
+          border-radius: 8px;
+        }
+
+        .bar-data {
+          z-index: 1000;
+          border-radius: 8px;
+        }
+      }
+
+      // 右側數字
+      .right {
+        position: relative;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        // padding-bottom: 8px;
+        padding-right: 8px;
+        width: 30%;
+
+        @media(max-width: 1600px) {
+          width: 45%;
+        }
+
+        p {
+          color: #fff;
+          font-family: "Noto Sans CJK TC";
+          font-size: 16px;
+          font-weight: 400;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

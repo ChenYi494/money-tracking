@@ -1,0 +1,18 @@
+<app-card [cardSetting]="card">
+  <div class="all">
+    <div class="data-section">
+      @for (data of resData; track $index) {
+      <div class="each-data">
+        <div class="left">
+          <h1>{{ data['category'] }}</h1>
+          <div class="bar bar-data" [style]="statausSetting1(data)"></div>
+          <div class="bar bar-full" [style]="statausSetting2(data)"></div>
+        </div>
+        <div class="right">
+          <p>{{ data['value'] }}元</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</app-card>

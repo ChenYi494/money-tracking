@@ -1,0 +1,94 @@
+::ng-deep {
+
+  // table設定
+  .ant-table {
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 1.5px 1.5px 8px 1px rgba(180, 225, 255, 0.2);
+  }
+
+  // 表格header
+  .ant-table-thead>tr>th {
+    text-align: center;
+    color: #00296b;
+    background-color: #bde0fe;
+    border: 1px solid #00296b;
+    border-right: none;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Noto Sans CJK TC", sans-serif;
+    height: 40px !important;
+  }
+
+  .ant-table-thead>tr>th:last-child {
+    border: 1px solid #00296b;
+  }
+
+  // 表格body
+  .ant-table-tbody>tr>td {
+    color: #f8f9fa;
+    border: 1px solid #00296b;
+    border-top: none;
+    border-right: none;
+    text-align: center;
+    padding: 8px 15px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Noto Sans CJK TC", sans-serif;
+  }
+
+  .ant-table-tbody>tr>td:last-child {
+    border-right: 1px solid #00296b;
+  }
+
+  .ant-table-tbody>tr {
+    &:nth-child(even) {
+      td {
+        background-color: rgba(189, 224, 254, 0.4) !important;
+      }
+    }
+
+    &:nth-child(odd) {
+      td {
+        background-color: rgba(189, 224, 254, 0.6) !important;
+      }
+    }
+  }
+
+  // pagination
+  .ant-pagination-item-active a {
+    color: #404040;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Noto Sans CJK TC";
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  .ant-pagination-item {
+    border-radius: 4px;
+    border: 1px solid #bde0fe;
+    background: #fff;
+
+    &:hover {
+      border: 1px solid #bde0fe;
+      background: #bde0fe;
+    }
+  }
+
+  // modal設定
+  .ant-modal-body {
+    border-radius: 12px;
+    padding: 0;
+  }
+
+  .ant-modal-content {
+    border-radius: 12px;
+  }
+
+  .ant-modal-close-x {
+    display: none;
+  }
+}

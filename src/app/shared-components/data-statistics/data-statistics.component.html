@@ -1,0 +1,12 @@
+<app-card [cardSetting]="card">
+  <div class="container">
+    <div class="data">
+      <h1>區段天數：{{allDataCount}}天</h1>
+      <h1 class="have">資料天數：{{haveDataCount}}天</h1>
+      <h1 class="no">缺失天數：{{noDataCount}}天</h1>
+    </div>
+    @if (!alreadyRecord) {
+    <span>本日尚未記帳</span>
+    }
+  </div>
+</app-card>

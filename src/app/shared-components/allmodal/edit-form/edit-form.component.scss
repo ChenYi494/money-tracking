@@ -1,0 +1,126 @@
+.all {
+  width: 100%;
+  // height: 400px; // 待調整
+  border-radius: 12px;
+  background-color: #ede0d4;
+
+  // 標題
+  .title {
+    width: 100%;
+    height: 50px;
+    background-color: #d5bdaf;
+    border-radius: 12px 12px 0 0;
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 0;
+      text-align: center;
+      line-height: 50px;
+      color: #011e4d;
+    }
+  }
+
+  // 內容
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: calc(100% - 100px);
+    padding: 16px 10px 10px;
+    overflow: auto;
+
+    .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 70%;
+      height: 75px;
+
+      span {
+        display: inline-block;
+        height: 36px;
+        text-align: end;
+        font-size: 15px;
+        line-height: 36px;
+        margin-right: 4px;
+        color: #011e4d;
+      }
+
+      .section {
+        width: 80%;
+        height: 36px;
+
+        .data-seclect {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  input {
+    width: 80%;
+    height: 32px;
+    padding-left: 9px;
+    border: 1px solid #adb5bd;
+    border-radius: 6px;
+  }
+
+  input:focus {
+    outline: none;
+    border: 1px solid #011e4d;
+  }
+
+  input::placeholder {
+    color: #adb5bd;
+  }
+
+  // 按鈕
+  .button-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    padding-right: 6px; // 待調整
+    padding-bottom: 16px; // 待調整
+
+    button {
+      border: 1px solid #000;
+    }
+  }
+}
+
+::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 6px;
+  border: 1px solid #adb5bd;
+}
+
+::ng-deep .ant-select:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border: 1px solid #adb5bd;
+  box-shadow: none;
+
+  &:hover {
+    border: 1px solid #011e4d;
+  }
+}
+
+::ng-deep .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border: 1px solid #adb5bd;
+  box-shadow: none;
+
+  &:hover {
+    border: 1px solid #011e4d;
+  }
+}
+
+::ng-deep .ant-picker {
+  border-radius: 6px;
+  border: 1px solid #adb5bd;
+}
+
+::ng-deep .ant-picker:hover {
+  border: 1px solid #011e4d;
+  box-shadow: none;
+}

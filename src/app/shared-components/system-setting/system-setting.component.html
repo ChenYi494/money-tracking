@@ -1,0 +1,63 @@
+<div class="system-setting">
+  <div class="main-section">
+    <div class="theme category">
+      <h2>分類管理</h2>
+      <!-- 收入/支出區塊 -->
+      <div class="section">
+        <div class="data income">
+          <div class="title">
+            <p>收入種類</p>
+            <div class="btn-test">
+              <button class="btn" (click)="createCategory('income')">新增</button>
+              @if(!deleteIncomeStatus) {
+              <button class="btn" (click)="deleteCategory('income')">刪除</button>
+              } @else {
+              <button class="btn" (click)="saveResult('income')">儲存</button>
+              }
+            </div>
+          </div>
+          <ul>
+            @for (item of allIncomeCategory; track $index) {
+            <li class="each-item income-item">{{item}}
+              @if(this.deleteIncomeStatus) {
+              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem('income', item)">
+              }
+            </li>
+            }
+          </ul>
+        </div>
+        <div class="data expend">
+          <div class="title">
+            <p>支出種類</p>
+            <div class="btn-test">
+              <button class="btn" (click)="createCategory('expend')">新增</button>
+              @if(!deleteExpendStatus) {
+              <button class="btn" (click)="deleteCategory('expend')">刪除</button>
+              } @else {
+              <button class="btn" (click)="saveResult('expend')">儲存</button>
+              }
+            </div>
+          </div>
+          <ul>
+            @for (item of allExpendCategory; track $index) {
+            <li class="each-item expend-item">{{item}}
+              @if(this.deleteExpendStatus) {
+              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem('expend', item)">
+              }
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="theme color">
+      <h2>色系管理</h2>
+      <div class="section section2">
+        <button class="btn1" [ngClass]="{'clicked': selectedColorTheme === 'dark'}"
+          (click)="changeColorTheme('dark')">深色</button>
+        <button class="btn1" [ngClass]="{'clicked': selectedColorTheme === 'light'}"
+          (click)="changeColorTheme('light')">淺色</button>
+      </div>
+    </div> -->
+  </div>
+</div>

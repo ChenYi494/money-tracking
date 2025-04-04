@@ -1,0 +1,34 @@
+<nz-layout>
+  <!-- sidebar -->
+  <div class="sidebar toggle-container" [ngClass]="menuSetting()">
+    <!-- 漢堡選單 -->
+    <div class="burger" (click)="toggleCollapsed()" [ngClass]="{'right': !isCollapsed}">
+      @if(isCollapsed) {
+      <div class="icon">
+        <span nz-icon nzType="double-right" nzTheme="outline"></span>
+      </div>
+      } @else {
+      <div class="icon">
+        <span nz-icon nzType="double-left" nzTheme="outline"></span>
+      </div>
+      }
+    </div>
+    <!-- 分頁選單 -->
+    <div class="section">
+      <div class="page-list">
+        @for (page of testCfgs; track $index) {
+        <li routerLink="{{page['router']}}" [ngClass]="{'clicked': page['router'] === pageName}">
+          <img [src]="page['icon']" alt="">
+          @if (!isCollapsed) {
+          <span>{{page['name']}}</span>
+          }
+        </li>
+        }
+      </div>
+    </div>
+  </div>
+  <!-- header&main-section -->
+  <nz-content id=" nz-content" class="main-section">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </nz-content>
+</nz-layout>

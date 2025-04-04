@@ -1,0 +1,11 @@
+<app-card [cardSetting]="card">
+  <div class="container">
+    <div class="number">
+      <div class="quantity" [ngStyle]="{'font-size': quantity >= 1000000 ? '35px' : '45px'}">
+        <span class="symbol">$</span>
+        <span>{{ quantity }}</span>
+      </div>
+      <div class="unit">單位：元</div>
+    </div>
+  </div>
+</app-card>

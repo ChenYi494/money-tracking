@@ -1,0 +1,82 @@
+<div class="all" [ngStyle]="{height: theme === '收支紀錄' ? '500px' : '375px'}">
+  <div class="title">
+    <h1>{{ this.status === 'create' ? '新增資料' : '編輯資料'}}</h1>
+  </div>
+  <div class="content">
+    @if (theme === '收支紀錄') {
+    <div class="item">
+      <span>日期：</span>
+      <div class="section">
+        <nz-date-picker class="data-seclect" [(ngModel)]="date" (ngModelChange)="onDateChange($event)"></nz-date-picker>
+      </div>
+    </div>
+    <div class="item">
+      <span>收支：</span>
+      <div class="section">
+        <nz-select class="data-seclect" nzAllowClear nzPlaceHolder="請選擇類型" [(ngModel)]="selectedType"
+          (ngModelChange)="getCategory($event)">
+          @for (type of typeOption; track $index) {
+          <nz-option nzLabel="{{ type }}" nzValue="{{ type }}"></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+    <div class="item">
+      <span>項目：</span>
+      <div class="section">
+        <nz-select class="data-seclect" nzAllowClear nzPlaceHolder="請選擇項目" [(ngModel)]="selectedCategory">
+          @for (category of categoryOption; track $index) {
+          <nz-option nzLabel="{{ category }}" nzValue="{{ category }}"></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+    <div class="item">
+      <span>品項：</span>
+      <input type="text" placeholder="Ex: 咖啡" [(ngModel)]="name">
+    </div>
+    <div class="item">
+      <span>費用：</span>
+      <input type="number" placeholder="Ex: 50" [min]=0 oninput="if(value<0) value=0" [(ngModel)]="data">
+    </div>
+    <div class="item">
+      <span>備註：</span>
+      <input type="text" placeholder="Ex: 提神必備" [(ngModel)]="commit">
+    </div>
+    }
+
+    @if(theme === '預算編列') {
+    <div class="item">
+      <span>月份：</span>
+      <div class="section">
+        <nz-date-picker class="data-seclect" nzMode="month" [(ngModel)]="month"
+          (ngModelChange)="onMonthChange($event)"></nz-date-picker>
+      </div>
+    </div>
+    <div class="item">
+      <span>項目：</span>
+      <div class="section">
+        <nz-select class="data-seclect" nzAllowClear nzPlaceHolder="請選擇項目" [(ngModel)]="selectedCategory">
+          @for (category of categoryOption; track $index) {
+          <nz-option nzLabel="{{ category }}" nzValue="{{ category }}"></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+    <div class="item">
+      <span>預算：</span>
+      <input type="number" placeholder="Ex: 50" [min]=0 oninput="if(value<0) value=0" [(ngModel)]="data">
+    </div>
+    <div class="item">
+      <span>備註：</span>
+      <input type="text" placeholder="Ex: 提神必備" [(ngModel)]="commit">
+    </div>
+    }
+  </div>
+  <div class="button-section">
+    <div class="section">
+      <button nz-button nzType="default" class="btn blue-light" (click)="cancel()">取消</button>
+      <button nz-button nzType="primary" class="btn blue" (click)="submit()">儲存</button>
+    </div>
+  </div>
+</div>

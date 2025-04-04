@@ -1,0 +1,15 @@
+.not-found {
+  width: 100%;
+  height: calc(100vh - 96px);
+  color: #fff;
+
+  &.open {
+    width: calc(100% - 200px);
+    margin-left: 200px;
+  }
+
+  &.close {
+    width: calc(100% - 56px);
+    margin-left: 56px;
+  }
+}

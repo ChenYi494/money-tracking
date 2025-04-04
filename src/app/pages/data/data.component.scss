@@ -1,0 +1,66 @@
+.data {
+  width: 100%;
+  height: calc(100vh - 96px);
+
+  &.open {
+    width: calc(100% - 200px);
+    margin-left: 200px;
+  }
+
+  &.close {
+    width: calc(100% - 56px);
+    margin-left: 56px;
+  }
+
+  .tab-section {
+    width: 100%;
+    height: 60px;
+    background-color: #d5bdaf;
+
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+
+      @media(max-width: 700px) {
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .tab-item {
+        width: 90px;
+        color: #011e4d;
+        background-color: #fff;
+        border: 2px solid #011e4d;
+        border-bottom: none;
+        border-radius: 6px 6px 0px 0px;
+        font-size: 17px;
+        font-family: "Noto Sans CJK TC";
+        font-style: normal;
+        font-weight: 400;
+        line-height: 32.5px; // 待調整
+        margin: 10px 0 0 10px;
+        padding: 8px;
+        cursor: pointer;
+
+        @media(max-width: 700px) {
+          margin-left: 0;
+        }
+
+        &.clicked {
+          color: #fff;
+          // background: #011e4d;
+          background: #023e7d;
+          border: 2px solid #011e4d;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  .data-section {
+    // display: flex; // 會讓子元件相對寬高設定失敗
+    width: 100%;
+    height: calc(100% - 60px);
+  }
+}

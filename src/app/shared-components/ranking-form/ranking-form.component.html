@@ -1,0 +1,18 @@
+<app-card [cardSetting]="card">
+  <div class="container">
+    @if (dataArr.length > 0) {
+    <table class="table">
+      <tr>
+        <th>{{ columnArr[0]}}</th>
+        <th>{{ columnArr[1]}}</th>
+      </tr>
+      @for (item of dataArr; track $index) {
+      <tr>
+        <td>{{item['item']}}</td>
+        <td>{{item['value']}}</td>
+      </tr>
+      }
+    </table>
+    }
+  </div>
+</app-card>

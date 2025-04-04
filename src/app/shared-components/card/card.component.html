@@ -1,0 +1,20 @@
+<div class="card">
+  <div class="card-header">
+    <p>{{ cardSetting.name }}</p>
+    @if (!cardSetting.edit) {
+    <div class="menu" (click)="openModal()">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    } @else {
+    <button class="change" (click)=" openCustom()">更換</button>
+    }
+  </div>
+  <div class="card-content">
+    <ng-content></ng-content>
+  </div>
+  @if (['總收入', '總支出', '總結餘'].includes(cardSetting.name)) {
+  <span class="money-logo"></span>
+  }
+</div>

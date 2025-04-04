@@ -1,0 +1,78 @@
+<div class="analyze" [ngClass]="menuSetting()">
+  @if (isLoading) {
+  <div class="loading">
+    <span class="loader"></span>
+  </div>
+  }
+  <div class="filter-section">
+    <div class="left-section">
+      <div class="filter1">
+        <div class="filter1-select" (click)="selectOption(1)">
+          <p>收入篩選</p>
+          <img class="test1" src="./assets/icon/down-arrow.png" alt="" [ngClass]="{ 'expanded1': isExpanded1 }">
+        </div>
+        <div class="filter1-detail" [ngClass]="{ 'expanded1': isExpanded1 }">
+          <div style="border-bottom: 1px solid rgb(233, 233, 233); padding-bottom: 2.5px">
+            <label nz-checkbox [(ngModel)]="allChecked1" (ngModelChange)="updateAllChecked(1)"
+              [nzIndeterminate]="indeterminate1">
+              全選
+            </label>
+          </div>
+          <br />
+          <nz-checkbox-group [(ngModel)]="allIncomeCategory"
+            (ngModelChange)="updateSingleChecked(1)"></nz-checkbox-group>
+        </div>
+      </div>
+      <div class="filter2">
+        <div class="filter2-select" (click)="selectOption(2)">
+          <p>支出篩選</p>
+          <img class="test1" src="./assets/icon/down-arrow.png" alt="" [ngClass]="{ 'expanded2': isExpanded2 }">
+        </div>
+        <div class="filter2-detail" [ngClass]="{ 'expanded2': isExpanded2 }">
+          <div style="border-bottom: 1px solid rgb(233, 233, 233); padding-bottom: 2.5px">
+            <label nz-checkbox [(ngModel)]="allChecked2" (ngModelChange)="updateAllChecked(2)"
+              [nzIndeterminate]="indeterminate2">
+              全選
+            </label>
+          </div>
+          <br />
+          <nz-checkbox-group [(ngModel)]="allExpendCategory"
+            (ngModelChange)="updateSingleChecked(2)"></nz-checkbox-group>
+        </div>
+      </div>
+      <div class="filter3">
+        <div class="filter3-select" (click)="selectOption(3)">
+          <p>時間篩選 : {{radioValue}}</p>
+          <img class="test1" src="./assets/icon/down-arrow.png" alt="" [ngClass]="{ 'expanded3': isExpanded3 }">
+        </div>
+        <div class="filter3-detail" [ngClass]="{ 'expanded3': isExpanded3 }">
+          <nz-radio-group [(ngModel)]="radioValue" class="time-list">
+            <label class="" nz-radio nzValue="當日">當日</label>
+            <label class="radio-item" nz-radio nzValue="近一週">近一週</label>
+            <label class="radio-item" nz-radio nzValue="近一個月">近一個月</label>
+            <label class="radio-item" nz-radio nzValue="近三個月">近三個月</label>
+            <label class="radio-item" nz-radio nzValue="近六個月">近六個月</label>
+            <label class="radio-item" nz-radio nzValue="自訂時間">自訂時間</label>
+            @if (radioValue === '自訂時間') {
+            <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+            }
+          </nz-radio-group>
+        </div>
+      </div>
+      <button class="btn search-btn" (click)="search()">查詢</button>
+    </div>
+    <div class="edit-section">
+      @if (!editState) {
+      <button class="btn" (click)="edit(true)">編輯</button>
+      }
+      @else {
+      <button class="btn" (click)="cancel()">取消</button>
+      <button class="btn" (click)="edit(false)">儲存</button>
+      }
+    </div>
+  </div>
+  <!-- 動態生成頁面元件 -->
+  <div class="dynamic-section type1">
+    <ng-container appDynamicComponentHost></ng-container>
+  </div>
+</div>

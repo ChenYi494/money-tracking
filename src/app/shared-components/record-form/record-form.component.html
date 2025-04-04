@@ -1,0 +1,158 @@
+<div class="record-form">
+  <!-- 按鈕區塊 -->
+  <div class="btn-section">
+    <div class="container">
+      <!-- <button class="btn2" (click)="changeMode()">
+        {{viewMode === 'card' ? '表格檢視' : '卡片檢視'}}
+      </button> -->
+      <button class="btn" (click)="openModal('create', [])">新增</button>
+      @if(!editStatus) {
+      <button class="btn" (click)="editControl()">編輯</button>
+      } @else {
+      <button class="btn" (click)="editControl()">儲存</button>
+      }
+    </div>
+  </div>
+  <!-- 資料區塊 -->
+  @if(viewMode === 'card') {
+  <div class="card-section">
+    <div class="container">
+      <div class="all-card">
+        @for (item of cardData; track $index) {
+        <div class="each-item2">
+          @if (selectedTheme === '收支紀錄') {
+          <h1 class="title">{{ item['date'] }}</h1>
+          <div class="content">
+            @if (item['income_detail'].length > 0) {
+            <div class="data">
+              @for (income_data of item['income_detail']; track $index) {
+              <table>
+                <tr>
+                  <td class="one">{{income_data['category']}}</td>
+                  <td class="two">{{income_data['name']}}</td>
+                  <td class="three income">
+                    +{{income_data['data']}}元
+                    @if (editStatus) {
+                    <img src="./assets/icon/edit.png" alt="" (click)="openModal('edit', income_data)">
+                    <img src="./assets/icon/delete.png" alt="" (click)="delete(income_data)">
+                    }
+                  </td>
+                </tr>
+              </table>
+              }
+            </div>
+            }
+            @if (item['expend_detail'].length > 0) {
+            <div class="data">
+              @for (expend_data of item['expend_detail']; track $index) {
+              <table>
+                <tr>
+                  <td class="one">{{expend_data['category']}}</td>
+                  <td class="two">{{expend_data['name']}}</td>
+                  <td class="three expend">
+                    -{{expend_data['data']}}元
+                    @if (editStatus) {
+                    <img src="./assets/icon/edit.png" alt="" (click)="openModal('edit', expend_data)">
+                    <img src="./assets/icon/delete.png" alt="" (click)="delete(expend_data)">
+                    }
+                  </td>
+                </tr>
+              </table>
+              }
+            </div>
+            }
+          </div>
+          <div class="total">
+            <span>{{item['total_income'] - item['total_expend']}}元</span>
+          </div>
+          } @else {
+          <h1 class="title">{{ item['month'] }}</h1>
+          <div class="content">
+            <div class="data">
+              @for (budget_data of item['budget_detail']; track $index) {
+              <table>
+                <tr>
+                  <td class="one">{{budget_data['category']}}</td>
+                  <td class="two">{{budget_data['name']}}</td>
+                  <td class="three budget">
+                    {{budget_data['data']}}元
+                    @if (editStatus) {
+                    <img src="./assets/icon/edit.png" alt="" (click)="openModal('edit', budget_data)">
+                    <img src="./assets/icon/delete.png" alt="" (click)="delete(budget_data)">
+                    }
+                  </td>
+                </tr>
+              </table>
+              }
+            </div>
+          </div>
+          <div class="total">
+            <span>{{item['total_budget']}}元</span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+  <!-- @if(viewMode === 'table') {
+  <div class="form-section">
+    <div class="container">
+      <nz-table class="table" #sortTable [nzData]="formData" nzTableLayout="fixed" [nzShowPagination]="true"
+        [nzPageSize]="15">
+        <thead>
+          <tr>
+            @for (column of formColumn; track $index) {
+            @if (column['title'] !== '更新時間') {
+            <th>{{ column }}</th>
+            } @else {
+            <th>{{ editStatus ? '編輯方式' : column}}
+            </th>
+            }
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (data of sortTable.data; track $index) {
+          @if (selectedTheme === '收支紀錄') {
+          <tr>
+            <td>{{ data.date }}</td>
+            <td [ngStyle]="{ 'color': data.type === '支出' ? '#ef233c' : '#80ed99' }">{{ data.type }}</td>
+            <td>{{ data.category }}</td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.data }}元</td>
+            <td>{{ data.commit }}</td>
+            <td>
+              @if (!editStatus) {
+              {{ data.update_time }}
+              } @else {
+              <span class="edit-item" (click)="openModal('edit', data)">編輯</span>
+              <span class="edit-item" (click)="delete(data)">刪除</span>
+              }
+            </td>
+          </tr>
+          } @else {
+          <tr>
+            <td>{{ data.month }}</td>
+            <td>{{ data.category }}</td>
+            <td>{{ data.data }}元</td>
+            <td>{{ data.commit }}</td>
+            <td>{{ data.progress }}</td>
+            <td>
+              @if (!editStatus) {
+              {{ data.update_time }}
+              } @else {
+              <span class="edit-item" (click)="openModal('edit', data)">編輯</span>
+              <span class="edit-item" (click)="delete(data)">刪除</span>
+              }
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  } -->
+</div>
