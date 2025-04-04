@@ -6,7 +6,7 @@ db = SQLAlchemy()
 # 紀錄上傳資料表(收支)
 class Upload_Ex_In(db.Model):
     __tablename__ = 'upload_in_ex_data'
-    id = db.Column(db.String(50), primary_key=True, comment='編號')
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')
     type = db.Column(db.String(20), comment='種類')
     category = db.Column(db.String(20), comment='分類名稱')
     name = db.Column(db.String(20), comment='品項')
@@ -20,7 +20,7 @@ class Upload_Ex_In(db.Model):
 # 紀錄上傳資料表(預算)
 class Upload_Bg(db.Model):
     __tablename__ = 'upload_bg_data'
-    id = db.Column(db.String(50), primary_key=True, comment='編號')
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')
     type = db.Column(db.String(20), comment='種類')
     category = db.Column(db.String(20), comment='分類名稱')
     name = db.Column(db.String(20), comment='品項')
