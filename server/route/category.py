@@ -9,7 +9,7 @@ category_routes = Blueprint("category_routes", __name__)
 
 # 取得所有分類
 @category_routes.route('/info', methods=['GET'])
-@jwt_required
+# @jwt_required
 def category_info():
     res = category.category_info()
     return res

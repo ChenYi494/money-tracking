@@ -12,23 +12,92 @@ from ..utils.database import db
 from server.model.upload import Upload_Ex_In, Upload_Bg
 
 
-# 取得所有上傳紀錄(包含收支/預算)
-def record():
+# 取得所有收支上傳紀錄
+def record_ie():
     # 讀取兩張表
-    df1 = pd.read_sql('upload_in_ex_data', con=db.engine).rename(columns={"date": "time"})
-    df2 = pd.read_sql('upload_bg_data', con=db.engine).rename(columns={"month": "time"})
+    df = pd.read_sql('upload_in_ex_data', con=db.engine)
+    df['update_time'] = df['update_time'].astype(str)
 
-    # 添加big_type欄位
-    df1, df2 = df1.assign(big_type='收支'), df2.assign(big_type='預算')
+    result_list = []
 
-    # 合併表格
-    df_merge = pd.concat([df1, df2], ignore_index=True)
+    # 以日期分組
+    for date, group in df.groupby('date'):
+        total_income = 0
+        total_expend = 0
+        income_detail = []
+        expend_detail = []
 
-    # 確保update_time轉為字串
-    if 'update_time' in df_merge.columns:
-        df_merge['update_time'] = df_merge['update_time'].astype(str).fillna('')
+        income_index = 1
+        expend_index = 1
 
-    return response_with(resp.SUCCESS_200, value={"data": df_merge.to_dict('records')})
+        for _, row in group.iterrows():
+            each_data = {
+                "id": row["id"],
+                "type": "income" if row["type"] == "收入" else "expend",
+                "category": row["category"],
+                "name": row["name"],
+                "data": row["cost"],
+                "commit": row.get("commit", ""),  # 沒有則預設空字串
+                "update_time": row["update_time"]
+            }
+
+            if row["type"] == "收入":
+                income_index += 1
+                total_income += row["cost"]
+                income_detail.append(each_data)
+            else:
+                expend_index += 1
+                total_expend += row["cost"]
+                expend_detail.append(each_data)
+
+        result_list.append({
+            "date": date,
+            "total_income": total_income,
+            "total_expend": total_expend,
+            "income_detail": income_detail,
+            "expend_detail": expend_detail
+        })
+
+    return response_with(resp.SUCCESS_200, value={"data": result_list})
+
+
+# 取得所有預算上傳紀錄
+def record_bg():
+    # 讀取兩張表
+    df = pd.read_sql('upload_bg_data', con=db.engine)
+    df['update_time'] = df['update_time'].astype(str)
+
+    result_list = []
+
+    # 以日期分組
+    for date, group in df.groupby('month'):
+        total_budget = 0
+        budget_detail = []
+
+        budget_index = 1
+
+        for _, row in group.iterrows():
+            each_data = {
+                "id": row["id"],
+                "type": "budget",
+                "category": row["category"],
+                "name": row["name"],
+                "data": row["cost"],
+                "commit": row.get("commit", ""),  # 沒有則預設空字串
+                "update_time": row["update_time"]
+            }
+
+            budget_index += 1
+            total_budget += row["cost"]
+            budget_detail.append(each_data)
+
+        result_list.append({
+            "date": date,
+            "total_budget": total_budget,
+            "budget_detail": budget_detail,
+        })
+
+    return response_with(resp.SUCCESS_200, value={"data": result_list})
 
 
 # 新增一筆紀錄

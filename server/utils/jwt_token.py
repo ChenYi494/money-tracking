@@ -8,7 +8,7 @@ from flask import Flask, jsonify, request
 SECRET_KEY = "your_secret_key"
 
 # 設置JWT的有效時間
-JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=1)
+JWT_EXPIRATION_DELTA = datetime.timedelta(hours=1)
 
 
 # 生成JWT token

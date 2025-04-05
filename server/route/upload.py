@@ -7,11 +7,19 @@ from flask_jwt_extended import jwt_required
 upload_routes = Blueprint("upload_routes", __name__)
 
 
-# 取得所有上傳紀錄(包含收支/預算)
-@upload_routes.route('/record', methods=['GET'])
+# 取得所有收支上傳紀錄
+@upload_routes.route('/record_ie', methods=['GET'])
 # @jwt_required()
-def record():
-    res = upload.record()
+def record_ie():
+    res = upload.record_ie()
+    return res
+
+
+# 取得所有預算上傳紀錄
+@upload_routes.route('/record_bg', methods=['GET'])
+# @jwt_required()
+def record_bg():
+    res = upload.record_bg()
     return res
 
 
