@@ -74,8 +74,42 @@ def create_data(request):
 
 # 更新一筆紀錄
 def update_data(request):
-    data = request.get_json()
-    return response_with(resp.SUCCESS_200, value={"data": "更新成功"})
+    try:
+        data = request.get_json()
+        record_id = data.get('id')
+
+        if not record_id:
+            return response_with(resp.BAD_REQUEST_400, value={"data": "缺少 id"})
+
+        # 根據big_type選擇資料表
+        if data.get('big_type') == '預算':
+            record = db.session.query(Upload_Bg).filter_by(id=record_id).first()
+        else:
+            record = db.session.query(Upload_Ex_In).filter_by(id=record_id).first()
+
+        if not record:
+            return response_with(resp.SERVER_ERROR_404, value={"data": "該資料不存在"})
+
+        # 更新欄位資料
+        record.type = data.get('type', record.type)
+        record.category = data.get('category', record.category)
+        record.name = data.get('name', record.name)
+        record.cost = data.get('cost', record.cost)
+        record.commit = data.get('commit', record.commit)
+        record.update_time = data.get('update_time', record.update_time)
+        record.user = data.get('user', record.user)
+
+        if data.get('big_type') == '預算':
+            record.month = data.get('month', record.month)
+        else:
+            record.date = data.get('date', record.date)
+
+        db.session.commit()
+        return response_with(resp.SUCCESS_200, value={"data": "成功更新一筆資料"})
+
+    except Exception as e:
+        db.session.rollback()
+        return response_with(resp.SERVER_ERROR_500, value={"data": "更新失敗，請重新操作"})
 
 
 # 刪除一筆紀錄
