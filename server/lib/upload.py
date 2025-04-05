@@ -70,7 +70,7 @@ def record_bg():
     result_list = []
 
     # 以日期分組
-    for date, group in df.groupby('month'):
+    for month, group in df.groupby('month'):
         total_budget = 0
         budget_detail = []
 
@@ -92,7 +92,7 @@ def record_bg():
             budget_detail.append(each_data)
 
         result_list.append({
-            "date": date,
+            "month": month,
             "total_budget": total_budget,
             "budget_detail": budget_detail,
         })

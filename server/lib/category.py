@@ -2,9 +2,11 @@
 import os
 import pandas as pd
 from sqlalchemy import text
+from sqlalchemy import delete
 from sqlalchemy.exc import SQLAlchemyError
 from functools import reduce
 from ..model.category import Category
+from ..model.upload import Upload_Ex_In, Upload_Bg
 from ..utils import responses as resp
 from ..utils.responses import response_with
 # from ..utils.sql_build import sql_insert, sql_update, sql_delete, sql_select
@@ -61,6 +63,12 @@ def delete_category(request):
 
         # 刪除該筆資料
         db.session.delete(category)
+
+        # 刪除該分類底下的資料紀錄
+        name = category.name
+        db.session.execute(delete(Upload_Ex_In).where(Upload_Ex_In.category == name))
+        db.session.execute(delete(Upload_Bg).where(Upload_Bg.category == name))
+
         db.session.commit()
 
         return response_with(resp.SUCCESS_200, value={"data": '成功刪除一筆分類'})
@@ -69,5 +77,4 @@ def delete_category(request):
         db.session.rollback()
         return response_with(resp.SERVER_ERROR_500, value={"data": '刪除失敗，請重新操作'})
 
-    # 刪除該分類底下的資料紀錄
 
