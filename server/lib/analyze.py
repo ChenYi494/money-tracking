@@ -112,57 +112,90 @@ def rank(request):
 # 每日總收入/支出資料
 def each_date_total(request):
     data = request.get_json()
-    res = {
-        '2024-03-01': {
-            "income": 0,
-            "expend": 200,
-        },
-        '2024-03-02': {
-            "income": 0,
-            "expend": 200,
-        },
-        '2024-03-04': {
-            "income": 1000,
-            "expend": 200,
-        },
-        '2024-03-09': {
-            "income": 0,
-            "expend": 200,
-        },
-    }
+    income_category = data.get("income_category")
+    expend_category = data.get("expend_category")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+
+    categories = (income_category or []) + (expend_category or [])
+
+    df = pd.read_sql('upload_in_ex_data', con=db.engine)
+    filtered_df = df[(df['category'].isin(categories)) & (df['date'] >= start_date) & (df['date'] <= end_date)]
+
+    # 分組加總
+    grouped = (
+        filtered_df.groupby(['date', 'type'])['cost']
+        .sum()
+        .reset_index()
+        .sort_values(by=['date', 'type'])
+    )
+
+    res = {}
+    for _, row in grouped.iterrows():
+        date_str = row['date']
+        type_key = 'income' if row['type'] == '收入' else 'expend'
+
+        if date_str not in res:
+            res[date_str] = {'income': 0, 'expend': 0}
+
+        res[date_str][type_key] = int(row['cost'])
+
     return response_with(resp.SUCCESS_200, value={"data": res})
 
 
 # 每日支出前兩名
 def each_date_rank(request):
     data = request.get_json()
-    res = {
-        '2024-03-01': [
-            {
-                "category": "日用品",
-                "value": 550
-            },
-            {
-                "category": "醫療",
-                "value": 200
-            }
-        ],
-        '2024-03-02': [
-            {
-                "category": "午餐",
-                "value": 250
-            }
-        ]
-    }
+    income_category = data.get("income_category")
+    expend_category = data.get("expend_category")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+
+    categories = (income_category or []) + (expend_category or [])
+
+    df = pd.read_sql('upload_in_ex_data', con=db.engine)
+    expend_df = df[(df['category'].isin(categories)) & (df['date'] >= start_date) & (df['date'] <= end_date) & (df['type'] == '支出')]
+
+    # 分組加總
+    grouped = (
+        expend_df.groupby(['date', 'category'])['cost']
+        .sum()
+        .reset_index()
+    )
+
+    res = {}
+    for _, row in grouped.iterrows():
+        date_str = row['date']
+        category = row['category']
+        cost = int(row['cost'])
+
+        if date_str not in res:
+            res[date_str] = {}
+
+        res[date_str][category] = cost
+
     return response_with(resp.SUCCESS_200, value={"data": res})
 
 
 # 詳細品項排名
 def detail_rank(request):
     data = request.get_json()
-    res = {
-        "捷運": 4,
-        "下午茶": 2,
-        "咖啡": 1
-    }
-    return response_with(resp.SUCCESS_200, value={"data": res})
+    income_category = data.get("income_category")
+    expend_category = data.get("expend_category")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+
+    categories = (income_category or []) + (expend_category or [])
+
+    df = pd.read_sql('upload_in_ex_data', con=db.engine)
+    expend_df = df[(df['category'].isin(categories)) & (df['date'] >= start_date) & (df['date'] <= end_date) & (df['type'] == '支出')]
+
+    # 分組加總
+    grouped = (
+        expend_df.groupby('name')
+        .size()
+        .reset_index(name='count')
+        .sort_values(by='count', ascending=False)
+    )
+
+    return response_with(resp.SUCCESS_200, value={"data": grouped.to_dict('records')})
