@@ -10,6 +10,7 @@ import { analyze } from '../../shared-components/config';
 import { CustomHostDirective } from '../../shared-components/custom-host.directive';
 // service
 import { CenterService } from '../../services/center.service';
+import { ApiService } from '../../services/api.service';
 // ng-zorro
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -60,7 +61,8 @@ export class AnalyzeComponent {
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private renderer: Renderer2,
-    private centerSVC: CenterService
+    private centerSVC: CenterService,
+    private apiSVC: ApiService,
   ) {
     // 更新元件
     this.centerSVC.updateCustom$
@@ -320,58 +322,105 @@ export class AnalyzeComponent {
           break;
       }
 
-      // 過濾資料
-      let temp = this.eachDayData.filter(e => moment(e['date']).isBetween(start_date, end_date, null, '[]')); // 過濾日期
-      let resultData = JSON.parse(JSON.stringify(temp)).map(e => {
-        e['have_data'] = true;
-        // 過濾種類
-        e['income_detail'] = e['income_detail'].filter(el => selectedInCategory.includes(el['category']));
-        e['expend_detail'] = e['expend_detail'].filter(el => selectedExCategory.includes(el['category']));
-        // 重新計算總收入
-        e['total_income'] = e['income_detail'].reduce((acc, cur) => {
-          return acc + cur['data'];
-        }, 0)
-        // 重新計算總支出
-        e['total_expend'] = e['expend_detail'].reduce((acc, cur) => {
-          return acc + cur['data'];
-        }, 0)
-        if (e['income_detail'].length === 0 && e['expend_detail'].length === 0) {
-          e['have_data'] = false;
-        }
-        return e;
-      }).filter(e => e['have_data']);
+      let req_body = {
+        income_category: selectedInCategory,
+        expend_category: selectedExCategory,
+        start_date: start_date,
+        end_date: end_date
+      }
 
-      // 當月預算資料（用於預算元件）
-      let monthBudget = this.eachMonthBudget.filter(e => {
-        if (moment(e['month']).isSame(moment(), 'month')) {
-          return e;
-        }
-      }).reduce((acc, cur) => {
-        return acc + cur['total_budget'];
-      }, 0)
-      // 當月支出資料（用於預算元件）
-      let monthExpend = this.eachDayData.filter(e => {
-        if (moment(e['date']).isSame(moment(), 'month')) {
-          return e;
-        }
-      }).reduce((acc, cur) => {
-        return acc + cur['total_expend'];
-      }, 0)
+      // 取得所有分析資料
+      // 當月剩餘預算
+      this.apiSVC.get('/api/analyze/remain_budget').then((res) => {
+        this.centerSVC.remainBudget$.next({
+          data: res['data']
+        })
+      })
+      // 總收入支出結餘
+      this.apiSVC.post('/api/analyze/total', req_body).then((res) => {
+        this.centerSVC.totalData$.next({
+          data: res['data']
+        })
+      })
+      // 收入支出排名
+      this.apiSVC.post('/api/analyze/rank', req_body).then((res) => {
+        this.centerSVC.rankData$.next({
+          data: res['data']
+        })
+      })
+      // 每日總收入/支出資料
+      this.apiSVC.post('/api/analyze/each_date_total', req_body).then((res) => {
+        this.centerSVC.eachDateTotal$.next({
+          data: res['data']
+        })
+      })
+      // 每日支出前兩名
+      this.apiSVC.post('/api/analyze/each_date_rank', req_body).then((res) => {
+        this.centerSVC.eachDateRank$.next({
+          data: res['data']
+        })
+      })
+      // 詳細品項排名
+      this.apiSVC.post('/api/analyze/detail_rank', req_body).then((res) => {
+        this.centerSVC.detailRank$.next({
+          data: res['data']
+        })
+      })
+
+      // // 過濾資料
+      // let temp = this.eachDayData.filter(e => moment(e['date']).isBetween(start_date, end_date, null, '[]')); // 過濾日期
+      // let resultData = JSON.parse(JSON.stringify(temp)).map(e => {
+      //   e['have_data'] = true;
+      //   // 過濾種類
+      //   e['income_detail'] = e['income_detail'].filter(el => selectedInCategory.includes(el['category']));
+      //   e['expend_detail'] = e['expend_detail'].filter(el => selectedExCategory.includes(el['category']));
+      //   // 重新計算總收入
+      //   e['total_income'] = e['income_detail'].reduce((acc, cur) => {
+      //     return acc + cur['data'];
+      //   }, 0)
+      //   // 重新計算總支出
+      //   e['total_expend'] = e['expend_detail'].reduce((acc, cur) => {
+      //     return acc + cur['data'];
+      //   }, 0)
+      //   if (e['income_detail'].length === 0 && e['expend_detail'].length === 0) {
+      //     e['have_data'] = false;
+      //   }
+      //   return e;
+      // }).filter(e => e['have_data']);
+
+      // // 當月預算資料（用於預算元件）
+      // let monthBudget = this.eachMonthBudget.filter(e => {
+      //   if (moment(e['month']).isSame(moment(), 'month')) {
+      //     return e;
+      //   }
+      // }).reduce((acc, cur) => {
+      //   return acc + cur['total_budget'];
+      // }, 0)
+      // // 當月支出資料（用於預算元件）
+      // let monthExpend = this.eachDayData.filter(e => {
+      //   if (moment(e['date']).isSame(moment(), 'month')) {
+      //     return e;
+      //   }
+      // }).reduce((acc, cur) => {
+      //   return acc + cur['total_expend'];
+      // }, 0)
 
       // 非編輯狀態時再跑loading
       if (!this.editState) {
         setTimeout(() => {
-          this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
+          // this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
+          this.isLoading = false;
         }, 1000)
       } else {
-        this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
+        // this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
+        this.isLoading = false;
       }
     }
   }
 
   // 傳送訊息
   sendResult(resultData, start_date, end_date, monthBudget, monthExpend) {
-    this.isLoading = false;
+    // this.isLoading = false;
     this.centerSVC.filter$.next({
       data: resultData,
       start_date: start_date,

@@ -37,20 +37,32 @@ export class BarRankingComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     let data = [];
+    //     if (this.name === '收入排名') {
+    //       res['data'].forEach(e => {
+    //         data.push(...e['income_detail']);
+    //       })
+    //     } else if (this.name === '支出排名') {
+    //       res['data'].forEach(e => {
+    //         data.push(...e['expend_detail']);
+    //       })
+    //     }
+    //     this.dataCalc(data);
+    //   })
+
+    this.centerSVC.rankData$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res: any) => {
-        let data = [];
+        console.log(res)
+        let data = res['data'];
         if (this.name === '收入排名') {
-          res['data'].forEach(e => {
-            data.push(...e['income_detail']);
-          })
+          this.dataSetting(data['income']);
         } else if (this.name === '支出排名') {
-          res['data'].forEach(e => {
-            data.push(...e['expend_detail']);
-          })
+          this.dataSetting(data['expend']);
         }
-        this.dataCalc(data);
       })
   }
 
@@ -75,29 +87,9 @@ export class BarRankingComponent implements OnInit, OnDestroy {
     }
   }
 
-  dataCalc(data) {
-    // 合併相同的category，計算data總和
-    const mergedData = data.reduce((acc, item) => {
-      const existing = acc.find(entry => entry.category === item.category);
-      if (existing) {
-        existing.value += item.data;
-      } else {
-        acc.push({
-          category: item.category,
-          value: item.data
-        });
-      }
-      return acc;
-    }, []).sort((a, b) => b.value - a.value);
-    this.dataSetting(mergedData);
-  }
-
   dataSetting(mergedData) {
-    // 門檻值設定（待調整）
+    // 門檻值設定
     let valueMax = Math.max(...mergedData.map(e => e['value'])); // 最大值
-    // let valueSum = mergedData.reduce((acc, cur) => {
-    //   return acc + cur['value'];
-    // }, 0); // 總和
     let threshold = valueMax;
     this.resData = mergedData.map(e => {
       // 門檻值設定

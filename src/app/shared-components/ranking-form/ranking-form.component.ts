@@ -37,39 +37,57 @@ export class RankingFormComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     this.dataArr = [];
+    //     this.columnArr = ['品項', '次數'];
+
+    //     // 取得所有支出資料
+    //     let allExpendData = [];
+    //     res['data'].forEach(e => {
+    //       allExpendData.push(...e['expend_detail']);
+    //     })
+
+    //     // 計算各品項出現次數
+    //     let tempObj = {};
+    //     allExpendData.forEach(e => {
+    //       if (!tempObj.hasOwnProperty(e.name)) {
+    //         tempObj[e.name] = 1;
+    //       } else {
+    //         tempObj[e.name] += 1;
+    //       }
+    //     })
+
+    //     Object.keys(tempObj).forEach(e => {
+    //       this.dataArr.push(
+    //         {
+    //           item: e,
+    //           value: tempObj[e]
+    //         },
+    //       )
+    //     })
+
+    //     this.dataArr.sort((a, b) => b.value - a.value);
+    //   })
+
+    this.centerSVC.detailRank$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res: any) => {
+        let data = res['data'];
         this.dataArr = [];
         this.columnArr = ['品項', '次數'];
 
-        // 取得所有支出資料
-        let allExpendData = [];
-        res['data'].forEach(e => {
-          allExpendData.push(...e['expend_detail']);
-        })
-
-        // 計算各品項出現次數
-        let tempObj = {};
-        allExpendData.forEach(e => {
-          if (!tempObj.hasOwnProperty(e.name)) {
-            tempObj[e.name] = 1;
-          } else {
-            tempObj[e.name] += 1;
-          }
-        })
-
-        Object.keys(tempObj).forEach(e => {
+        data.forEach(e => {
           this.dataArr.push(
             {
-              item: e,
-              value: tempObj[e]
+              item: e['name'],
+              value: e['count'],
             },
           )
         })
 
-        this.dataArr.sort((a, b) => b.value - a.value);
-      })
+    })
   }
 
   ngOnInit(): void {

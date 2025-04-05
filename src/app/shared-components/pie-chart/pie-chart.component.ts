@@ -56,24 +56,37 @@ export class PieChartComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((res: any) => {
-        let data = [];
-        let sum = 0;
-        if (this.name === '各分類收入') {
-          res['data'].forEach(e => {
-            data.push(...e['income_detail']);
-            sum += e['total_income'];
-          })
-        } else if (this.name === '各分類支出') {
-          res['data'].forEach(e => {
-            data.push(...e['expend_detail']);
-            sum += e['total_expend'];
-          })
-        }
-        this.dataCalc(data, sum);
-      })
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     let data = [];
+    //     let sum = 0;
+    //     if (this.name === '各分類收入') {
+    //       res['data'].forEach(e => {
+    //         data.push(...e['income_detail']);
+    //         sum += e['total_income'];
+    //       })
+    //     } else if (this.name === '各分類支出') {
+    //       res['data'].forEach(e => {
+    //         data.push(...e['expend_detail']);
+    //         sum += e['total_expend'];
+    //       })
+    //     }
+    //     this.dataCalc(data, sum);
+    //   })
+
+    this.centerSVC.rankData$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((res: any) => {
+      let data = res['data'];
+      if (this.name === '各分類收入') {
+        let sum = data['income'].reduce((acc, cur) => acc + cur);
+        this.chartSetting2(data['income'], sum);
+      } else if (this.name === '各分類支出') {
+        let sum = data['expend'].reduce((acc, cur) => acc + cur);
+        this.chartSetting2(data['expend'], sum);
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -100,24 +113,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next(true);
     this.destroyed$.complete();
-  }
-
-  dataCalc(data, sum) {
-    // 合併相同的category，計算data總和
-    const mergedData = data.reduce((acc, item) => {
-      const existing = acc.find(entry => entry.category === item.category);
-      if (existing) {
-        existing.value += item.data;
-      } else {
-        acc.push({
-          category: item.category,
-          value: item.data
-        });
-      }
-      return acc;
-    }, [])
-      .sort((a, b) => b.value - a.value);
-    this.chartSetting2(mergedData, sum);
   }
 
   // 圖表設定(柱狀圖)
@@ -260,7 +255,8 @@ export class PieChartComponent implements OnInit, OnDestroy {
           type: 'shadow'
         },
         formatter: (params => {
-          let result = `${params['marker']}${params['name']}：${params['data']['value']}元（${Math.round((params['data']['value'] / sum) * 100)}％）<br/>`
+          // let result = `${params['marker']}${params['name']}：${params['data']['value']}元（${Math.round((params['data']['value'] / sum) * 100)}％）<br/>`
+          let result = `${params['marker']}${params['name']}：${params['data']['value']}元（${(params['percent'])}％）<br/>`
           return result;
         })
       },

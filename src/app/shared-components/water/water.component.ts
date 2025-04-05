@@ -37,11 +37,11 @@ export class WaterComponent implements OnInit, OnDestroy {
   card!: CardSetting;
   // 元件內容
   chartOptions: any = {};
-  monthExpend = 0;
-  monthBudget = 0;
   rate = 9999;
   textColor: string = '';
   waterColor: string[] = [];
+
+  remainBudget = 0;
 
   constructor(
     private centerSVC: CenterService
@@ -55,6 +55,15 @@ export class WaterComponent implements OnInit, OnDestroy {
     //     this.rate = 100 - Math.round((data['monthExpend'] / data['monthBudget']) * 100);
     //     this.setWater();
     //   })
+
+    this.centerSVC.remainBudget$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((res: any) => {
+        let data = res['data'];
+        this.remainBudget = data['value'];
+        this.rate = Math.round(data['percent'] * 100);
+        // this.setWater();
+      })
   }
 
   ngOnInit(): void {

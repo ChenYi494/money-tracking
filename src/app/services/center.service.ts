@@ -11,8 +11,14 @@ export class CenterService {
   // Subject
   updateCustom$ = new Subject();
   menuStatus$ = new Subject();
+  // 測試中(全部一起送或分開送資料)
   filter$ = new Subject();
-  data$ = new Subject();
+  remainBudget$ = new Subject();
+  totalData$ = new Subject();
+  rankData$ = new Subject();
+  eachDateTotal$ = new Subject();
+  eachDateRank$ = new Subject();
+  detailRank$ = new Subject();
 
   // 變數
   week_type = {

@@ -41,11 +41,18 @@ export class TimeBarComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((res: any) => {
-        this.chartSetting(res['data']);
-      })
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     this.chartSetting(res['data']);
+    //   })
+
+    this.centerSVC.eachDateRank$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((res: any) => {
+      let data = res['data'];
+      this.chartSetting(data);
+    })
   }
 
   ngOnInit(): void {
@@ -76,17 +83,16 @@ export class TimeBarComponent implements OnInit, OnDestroy {
 
   // 圖表設定（柱狀圖）
   chartSetting(originData) {
-    originData.sort((a, b) => {
-      const dateA: any = new Date(a.date);
-      const dateB: any = new Date(b.date);
-      return dateA - dateB;
-    });
-
-    let allDate = originData.map(e => e['date'].replaceAll('-', '/'));
-    let expendData = originData.map(e => {
-      let temp = e['expend_detail']
-        .sort((a, b) => b.data - a.data)
-        .slice(0, 2);
+    let allDate = Object.keys(originData).map(e => e.replaceAll('-', '/'))
+    let expendData = Object.values(originData).map(e => {
+      let temp = [];
+      Object.keys(e).forEach(test => {
+        temp.push({
+          category: test,
+          data: e[test]
+        })
+      })
+      temp.sort((a, b) => b.data - a.data);
       return {
         date: e['date'],
         expend_filter: temp.map((el, i) => {

@@ -41,19 +41,34 @@ export class DataStatisticsComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((res: any) => {
-        this.allDataCount = moment(res['end_date']).diff(moment(res['start_date']), 'days') + 1;
-        this.haveDataCount = res['data'].length;
-        this.noDataCount = this.allDataCount - this.haveDataCount;
-        let allDataDate = res['data'].map(e => e['date']);
-        if (allDataDate.includes(moment().format('YYYY-MM-DD'))) {
-          this.alreadyRecord = true;
-        } else {
-          this.alreadyRecord = false;
-        }
-      })
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     this.allDataCount = moment(res['end_date']).diff(moment(res['start_date']), 'days') + 1;
+    //     this.haveDataCount = res['data'].length;
+    //     this.noDataCount = this.allDataCount - this.haveDataCount;
+    //     let allDataDate = res['data'].map(e => e['date']);
+    //     if (allDataDate.includes(moment().format('YYYY-MM-DD'))) {
+    //       this.alreadyRecord = true;
+    //     } else {
+    //       this.alreadyRecord = false;
+    //     }
+    //   })
+
+    this.centerSVC.eachDateTotal$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((res: any) => {
+      let data = res['data'];
+      this.allDataCount = moment(res['end_date']).diff(moment(res['start_date']), 'days') + 1;
+      this.haveDataCount = Object.keys(data).length;
+      this.noDataCount = this.allDataCount - this.haveDataCount;
+      // let allDataDate = res['data'].map(e => e['date']);
+      // if (allDataDate.includes(moment().format('YYYY-MM-DD'))) {
+      //   this.alreadyRecord = true;
+      // } else {
+      //   this.alreadyRecord = false;
+      // }
+    })
   }
 
   ngOnInit(): void {

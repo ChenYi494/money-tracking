@@ -41,11 +41,18 @@ export class TimeLineComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    this.centerSVC.filter$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((res: any) => {
-        this.chartSetting(res['data']);
-      })
+    // this.centerSVC.filter$
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((res: any) => {
+    //     this.chartSetting(res['data']);
+    //   })
+
+    this.centerSVC.eachDateTotal$
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((res: any) => {
+      let data = res['data'];
+      this.chartSetting(data);
+    })
   }
 
   ngOnInit(): void {
@@ -76,14 +83,9 @@ export class TimeLineComponent implements OnInit, OnDestroy {
 
   // 圖表設定（折線圖）
   chartSetting(originData) {
-    originData.sort((a, b) => {
-      const dateA: any = new Date(a.date);
-      const dateB: any = new Date(b.date);
-      return dateA - dateB;
-    });
-    let incomeData = originData.map(e => e['total_income']);
-    let expendData = originData.map(e => e['total_expend']);
-    let allDate = originData.map(e => e['date'].replaceAll('-', '/'));
+    let incomeData = Object.values(originData).map(e => e['income']);
+    let expendData = Object.values(originData).map(e => e['expend']);
+    let allDate = Object.keys(originData).map(e => e.replaceAll('-', '/'))
     let name = ['收入', '支出'];
     let data = [];
     name.forEach(e => {
