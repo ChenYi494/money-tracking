@@ -2,9 +2,6 @@
   <!-- 按鈕區塊 -->
   <div class="btn-section">
     <div class="container">
-      <!-- <button class="btn2" (click)="changeMode()">
-        {{viewMode === 'card' ? '表格檢視' : '卡片檢視'}}
-      </button> -->
       <button class="btn" (click)="openModal('create', [])">新增</button>
       @if(!editStatus) {
       <button class="btn" (click)="editControl()">編輯</button>
@@ -96,63 +93,4 @@
     </div>
   </div>
   }
-  <!-- @if(viewMode === 'table') {
-  <div class="form-section">
-    <div class="container">
-      <nz-table class="table" #sortTable [nzData]="formData" nzTableLayout="fixed" [nzShowPagination]="true"
-        [nzPageSize]="15">
-        <thead>
-          <tr>
-            @for (column of formColumn; track $index) {
-            @if (column['title'] !== '更新時間') {
-            <th>{{ column }}</th>
-            } @else {
-            <th>{{ editStatus ? '編輯方式' : column}}
-            </th>
-            }
-            }
-          </tr>
-        </thead>
-        <tbody>
-          @for (data of sortTable.data; track $index) {
-          @if (selectedTheme === '收支紀錄') {
-          <tr>
-            <td>{{ data.date }}</td>
-            <td [ngStyle]="{ 'color': data.type === '支出' ? '#ef233c' : '#80ed99' }">{{ data.type }}</td>
-            <td>{{ data.category }}</td>
-            <td>{{ data.name }}</td>
-            <td>{{ data.data }}元</td>
-            <td>{{ data.commit }}</td>
-            <td>
-              @if (!editStatus) {
-              {{ data.update_time }}
-              } @else {
-              <span class="edit-item" (click)="openModal('edit', data)">編輯</span>
-              <span class="edit-item" (click)="delete(data)">刪除</span>
-              }
-            </td>
-          </tr>
-          } @else {
-          <tr>
-            <td>{{ data.month }}</td>
-            <td>{{ data.category }}</td>
-            <td>{{ data.data }}元</td>
-            <td>{{ data.commit }}</td>
-            <td>{{ data.progress }}</td>
-            <td>
-              @if (!editStatus) {
-              {{ data.update_time }}
-              } @else {
-              <span class="edit-item" (click)="openModal('edit', data)">編輯</span>
-              <span class="edit-item" (click)="delete(data)">刪除</span>
-              }
-            </td>
-          </tr>
-          }
-          }
-        </tbody>
-      </nz-table>
-    </div>
-  </div>
-  } -->
 </div>
