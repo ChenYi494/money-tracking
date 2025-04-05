@@ -2,14 +2,14 @@
 import os
 from flask import Blueprint, request
 from ..lib import category
-from flask_jwt_extended import jwt_required
+from .. utils.jwt_token import jwt_required
 
 category_routes = Blueprint("category_routes", __name__)
 
 
 # 取得所有分類
 @category_routes.route('/info', methods=['GET'])
-# @jwt_required()
+@jwt_required
 def category_info():
     res = category.category_info()
     return res
