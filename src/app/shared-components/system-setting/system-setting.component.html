@@ -18,9 +18,9 @@
           </div>
           <ul>
             @for (item of allIncomeCategory; track $index) {
-            <li class="each-item income-item">{{item}}
+            <li class="each-item income-item">{{item.name}}
               @if(this.deleteIncomeStatus) {
-              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem('income', item)">
+              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem(item)">
               }
             </li>
             }
@@ -40,9 +40,9 @@
           </div>
           <ul>
             @for (item of allExpendCategory; track $index) {
-            <li class="each-item expend-item">{{item}}
+            <li class="each-item expend-item">{{item.name}}
               @if(this.deleteExpendStatus) {
-              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem('expend', item)">
+              <img src="./assets/icon/delete2.png" alt="" (click)="deleteItem(item)">
               }
             </li>
             }
@@ -50,14 +50,5 @@
         </div>
       </div>
     </div>
-    <!-- <div class="theme color">
-      <h2>色系管理</h2>
-      <div class="section section2">
-        <button class="btn1" [ngClass]="{'clicked': selectedColorTheme === 'dark'}"
-          (click)="changeColorTheme('dark')">深色</button>
-        <button class="btn1" [ngClass]="{'clicked': selectedColorTheme === 'light'}"
-          (click)="changeColorTheme('light')">淺色</button>
-      </div>
-    </div> -->
   </div>
 </div>

@@ -133,30 +133,6 @@
   }
 }
 
-.section2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-
-  .btn1 {
-    width: 80px;
-    height: 45px;
-    font-size: 18px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    border: 1px solid #f8f9fa;
-    color: #011e4d;
-    cursor: pointer;
-
-    &.clicked {
-      background-color: #ede0d4;
-      border: 2px solid #c5aa9a;
-      color: #011e4d;
-    }
-  }
-}
-
 img {
   width: 20px;
   height: 20px;

@@ -12,6 +12,7 @@ export class CenterService {
   updateCustom$ = new Subject();
   menuStatus$ = new Subject();
   filter$ = new Subject();
+  data$ = new Subject();
 
   // 變數
   week_type = {
