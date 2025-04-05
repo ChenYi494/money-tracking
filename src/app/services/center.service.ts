@@ -20,6 +20,11 @@ export class CenterService {
   eachDateRank$ = new Subject();
   detailRank$ = new Subject();
 
+  eachDayData;
+  eachMonthBudget;
+  allIncomeCategory;
+  allExpendCategory;
+
   // 變數
   week_type = {
     0: '日',

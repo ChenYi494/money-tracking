@@ -43,6 +43,10 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
     this.apiSVC.get('/api/category/info').then((res) => {
       this.allIncomeCategory = res['data'].filter(e => e['type'] === '收入');
       this.allExpendCategory = res['data'].filter(e => e['type'] === '支出');
+
+      // 更新全域變數
+      this.centerSVC['allIncomeCategory'] = res['data'].filter(e => e['type'] === '收入');
+      this.centerSVC['allExpendCategory'] = res['data'].filter(e => e['type'] === '支出');
     })
   }
 

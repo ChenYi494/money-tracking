@@ -56,7 +56,6 @@ export class BarRankingComponent implements OnInit, OnDestroy {
     this.centerSVC.rankData$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res: any) => {
-        console.log(res)
         let data = res['data'];
         if (this.name === '收入排名') {
           this.dataSetting(data['income']);

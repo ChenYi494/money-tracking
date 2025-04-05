@@ -8,6 +8,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 // moment
 import moment from 'moment';
+// service
+import { CenterService } from '../../../services/center.service';
 
 @Component({
   selector: 'app-edit-form',
@@ -33,13 +35,14 @@ export class EditFormComponent {
   allExpendCategory = [];
 
   constructor(
+    private centerSVC: CenterService,
     private modalRef: NzModalRef,
     @Inject(NZ_MODAL_DATA) public source: any,
   ) {
     this.theme = source['theme'];
     this.status = source['status'];
-    this.allIncomeCategory = JSON.parse(localStorage.getItem('allIncomeCategory'));
-    this.allExpendCategory = JSON.parse(localStorage.getItem('allExpendCategory'));
+    this.allIncomeCategory = this.centerSVC['allIncomeCategory'].map(e => e['name']);
+    this.allExpendCategory = this.centerSVC['allExpendCategory'].map(e => e['name']);
     if (this.theme === '預算編列') {
       this.getCategory('支出');
     }

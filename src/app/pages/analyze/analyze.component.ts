@@ -49,8 +49,6 @@ export class AnalyzeComponent {
   radioValue = '近一個月';
 
   // 資料（收支紀錄）
-  eachDayData = [];
-  eachMonthBudget = [];
   allIncomeCategory = [];
   allExpendCategory = [];
   date = ['2025-01-01', '2025-02-28']; // 預設日期
@@ -80,17 +78,18 @@ export class AnalyzeComponent {
       .subscribe(res => {
         this.isCollapse = res['status'];
       })
+
+    // // 監聽路由變化事件
+    // this.router.events
+    // .pipe(filter((event) => event instanceof NavigationEnd))
+    // .subscribe(() => {
+    //   this.updateClassFromRoute();
+    // });
+
+  this.isCollapse = this.centerSVC.isCollapse;
   }
 
   ngOnInit(): void {
-    // 監聽路由變化事件
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.updateClassFromRoute();
-      });
-
-    this.isCollapse = this.centerSVC.isCollapse;
   }
 
   ngAfterViewInit(): void {
@@ -100,6 +99,9 @@ export class AnalyzeComponent {
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
+
+    // 清除動態生成的元件
+    // this.dynamicComponentLoader.viewContainerRef.clear();
   }
 
   updateClassFromRoute(): void {
@@ -119,13 +121,11 @@ export class AnalyzeComponent {
     }, []);
 
     // 取得基本資料
-    this.eachDayData = JSON.parse(localStorage.getItem('eachDayData'));
-    this.eachMonthBudget = JSON.parse(localStorage.getItem('eachMonthBudget'));
-    this.allIncomeCategory = JSON.parse(localStorage.getItem('allIncomeCategory')).map(e => {
-      return { label: e, value: e, checked: true }
+    this.allIncomeCategory = this.centerSVC['allIncomeCategory'].map(e => {
+      return { label: e['name'], value: e['name'], checked: true }
     });
-    this.allExpendCategory = JSON.parse(localStorage.getItem('allExpendCategory')).map(e => {
-      return { label: e, value: e, checked: true }
+    this.allExpendCategory = this.centerSVC['allExpendCategory'].map(e => {
+      return { label: e['name'], value: e['name'], checked: true }
     });
     this.changeDetectorRef.detectChanges();
 
@@ -366,44 +366,6 @@ export class AnalyzeComponent {
           data: res['data']
         })
       })
-
-      // // 過濾資料
-      // let temp = this.eachDayData.filter(e => moment(e['date']).isBetween(start_date, end_date, null, '[]')); // 過濾日期
-      // let resultData = JSON.parse(JSON.stringify(temp)).map(e => {
-      //   e['have_data'] = true;
-      //   // 過濾種類
-      //   e['income_detail'] = e['income_detail'].filter(el => selectedInCategory.includes(el['category']));
-      //   e['expend_detail'] = e['expend_detail'].filter(el => selectedExCategory.includes(el['category']));
-      //   // 重新計算總收入
-      //   e['total_income'] = e['income_detail'].reduce((acc, cur) => {
-      //     return acc + cur['data'];
-      //   }, 0)
-      //   // 重新計算總支出
-      //   e['total_expend'] = e['expend_detail'].reduce((acc, cur) => {
-      //     return acc + cur['data'];
-      //   }, 0)
-      //   if (e['income_detail'].length === 0 && e['expend_detail'].length === 0) {
-      //     e['have_data'] = false;
-      //   }
-      //   return e;
-      // }).filter(e => e['have_data']);
-
-      // // 當月預算資料（用於預算元件）
-      // let monthBudget = this.eachMonthBudget.filter(e => {
-      //   if (moment(e['month']).isSame(moment(), 'month')) {
-      //     return e;
-      //   }
-      // }).reduce((acc, cur) => {
-      //   return acc + cur['total_budget'];
-      // }, 0)
-      // // 當月支出資料（用於預算元件）
-      // let monthExpend = this.eachDayData.filter(e => {
-      //   if (moment(e['date']).isSame(moment(), 'month')) {
-      //     return e;
-      //   }
-      // }).reduce((acc, cur) => {
-      //   return acc + cur['total_expend'];
-      // }, 0)
 
       // 非編輯狀態時再跑loading
       if (!this.editState) {

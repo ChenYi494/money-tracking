@@ -161,7 +161,6 @@ export class RecordFormComponent {
 
   // 編輯資料
   editData(result) {
-    console.log(result)
     let req_body = {};
     if (this.selectedTheme === '收支紀錄') {
       req_body = {
