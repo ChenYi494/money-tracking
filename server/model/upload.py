@@ -1,6 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from server.extensions import db
 
 
 # 紀錄上傳資料表(收支)
