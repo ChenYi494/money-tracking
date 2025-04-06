@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// rxjs
-import { ReplaySubject } from 'rxjs';
 // component
 import { EditCategoryComponent } from '../../shared-components/allmodal/edit-category/edit-category.component';
 // ng-zorro
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+// rxjs
+import { ReplaySubject, takeUntil } from 'rxjs';
 // service
 import { CenterService } from '../../services/center.service';
 import { ApiService } from '../../services/api.service';
@@ -31,7 +31,14 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
     private centerSVC: CenterService,
     private modalService: NzModalService,
     private apiSVC: ApiService,
-  ) {}
+  ) {
+    // 從header傳遞資訊確認資料取得完成
+    this.centerSVC.isDataLoaded$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isLoaded => {
+        if (isLoaded) this.getCategory();
+      });
+  }
 
   ngOnInit(): void {
     // 取得所有分類
@@ -40,14 +47,8 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
 
   // 取得所有分類
   getCategory() {
-    this.apiSVC.get('/api/category/info').then((res) => {
-      this.allIncomeCategory = res['data'].filter(e => e['type'] === '收入');
-      this.allExpendCategory = res['data'].filter(e => e['type'] === '支出');
-
-      // 更新全域變數
-      this.centerSVC['allIncomeCategory'] = res['data'].filter(e => e['type'] === '收入');
-      this.centerSVC['allExpendCategory'] = res['data'].filter(e => e['type'] === '支出');
-    })
+    this.allIncomeCategory = this.centerSVC['allIncomeCategory'];
+    this.allExpendCategory = this.centerSVC['allExpendCategory'];
   }
 
   // 新增分類
@@ -73,8 +74,8 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
            alert(res['data']);
         })
 
-        // 重新取得所有分類
-        this.getCategory();
+        // 更新資料
+        this.updateData();
       }
     });
   }
@@ -89,8 +90,19 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
        alert(res['data']);
     })
 
-    //  重新取得所有分類
-    this.getCategory();
+
+    // 更新資料
+    this.updateData();
+  }
+
+  // 更新資料
+  updateData() {
+    // 重新撈資料
+    this.apiSVC.get('/api/category/info').then((data: any) => {
+      this.centerSVC['allIncomeCategory'] = data['data'].filter(e => e['type'] === '收入');
+      this.centerSVC['allExpendCategory'] = data['data'].filter(e => e['type'] === '支出');
+      this.getCategory(); // 重新跑頁面
+    });
   }
 
   // 刪除(狀態設定)

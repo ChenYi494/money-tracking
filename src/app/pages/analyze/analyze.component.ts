@@ -21,11 +21,13 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 // moment
 import moment from 'moment';
+// component
+import { LoadingComponent } from '../../shared-components/loading/loading.component';
 
 @Component({
   selector: 'app-analyze',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomHostDirective, NzDropDownModule, NzRadioModule, NzButtonModule, NzSelectModule, NzDatePickerModule, NzCheckboxModule, NzDividerModule],
+  imports: [LoadingComponent, CommonModule, FormsModule, CustomHostDirective, NzDropDownModule, NzRadioModule, NzButtonModule, NzSelectModule, NzDatePickerModule, NzCheckboxModule, NzDividerModule],
   templateUrl: './analyze.component.html',
   styleUrl: './analyze.component.scss'
 })
@@ -86,14 +88,23 @@ export class AnalyzeComponent {
     //   this.updateClassFromRoute();
     // });
 
-  this.isCollapse = this.centerSVC.isCollapse;
+    // 從header傳遞資訊確認資料取得完成
+    this.centerSVC.isDataLoaded$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isLoaded => {
+        if (isLoaded) this.init();
+      });
+
+    this.isCollapse = this.centerSVC.isCollapse;
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    this.updateClassFromRoute();
+    if(typeof this.centerSVC.eachDayData !== 'undefined') {
+      this.updateClassFromRoute();
+    }
   }
 
   ngOnDestroy(): void {

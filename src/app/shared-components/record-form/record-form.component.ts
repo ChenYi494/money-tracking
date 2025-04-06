@@ -5,9 +5,10 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 // component
 import { EditFormComponent } from '../allmodal/edit-form/edit-form.component';
-// moment
-import moment from 'moment';
+// rxjs
+import { ReplaySubject, takeUntil } from 'rxjs';
 // service
+import { CenterService } from '../../services/center.service';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -18,6 +19,7 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './record-form.component.scss'
 })
 export class RecordFormComponent {
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   @Input() selectedTheme: string; // 收支紀錄/預算編列
   viewMode: string = 'card'; // card/table
   editStatus: boolean = false; // 編輯狀態
@@ -31,38 +33,43 @@ export class RecordFormComponent {
 
   constructor(
     private modalService: NzModalService,
+    private centerSVC: CenterService,
     private apiSVC: ApiService,
-  ) {}
+  ) {
+    // 從header傳遞資訊確認資料取得完成
+    this.centerSVC.isDataLoaded$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isLoaded => {
+        if (isLoaded) this.getData();
+      });
+  }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes): void {
-    this.getData();
+    if(typeof this.centerSVC.eachDayData !== 'undefined') {
+      this.getData();
+    }
   }
 
   // 取得資料
   getData() {
     // 收支
-    this.apiSVC.get('/api/upload/record_ie').then((res) => {
-      this.eachDayData = res['data']
-      .sort((a, b) => { // 依日期排序
-        const dateA: any = new Date(a.date);
-        const dateB: any = new Date(b.date);
-        return dateB - dateA;
-      })
-      this.dataSetting();
+    this.eachDayData = this.centerSVC['eachDayData']
+    .sort((a, b) => { // 依日期排序
+      const dateA: any = new Date(a.date);
+      const dateB: any = new Date(b.date);
+      return dateB - dateA;
     })
     // 預算
-    this.apiSVC.get('/api/upload/record_bg').then((res) => {
-      this.eachMonthBudget = res['data']
-      .sort((a, b) => { // 依日期排序
-        const dateA: any = new Date(a.date);
-        const dateB: any = new Date(b.date);
-        return dateB - dateA;
-      })
-      this.dataSetting();
+    this.eachMonthBudget = this.centerSVC['eachMonthBudget']
+    .sort((a, b) => { // 依月份排序
+      const dateA: any = new Date(a.month + '-01');
+      const dateB: any = new Date(b.month + '-01');
+      return dateB - dateA;
     })
+    this.dataSetting();
   }
 
   // 設定資料
@@ -74,7 +81,7 @@ export class RecordFormComponent {
     switch (this.selectedTheme) {
       case '收支紀錄':
         // 卡片設定
-        this.cardData = JSON.parse(JSON.stringify(this.eachDayData)).map(e => ({
+        this.cardData = this.eachDayData.map(e => ({
           ...e,
           date: e.date.replaceAll('-', '/'),
           income_detail: e.income_detail.map(el => ({ ...el, type: '收入', date: e.date.replaceAll('-', '/') })),
@@ -83,8 +90,7 @@ export class RecordFormComponent {
         break;
       case '預算編列':
         // 卡片設定
-        console.log(this.eachMonthBudget)
-        this.cardData = JSON.parse(JSON.stringify(this.eachMonthBudget)).map(e => ({
+        this.cardData = this.eachMonthBudget.map(e => ({
           ...e,
           month: e.month.replaceAll('-', '/'),
           budget_detail: e.budget_detail.map(el => ({ ...el, type: '預算', month: e.month.replaceAll('-', '/') })),
@@ -119,8 +125,6 @@ export class RecordFormComponent {
         } else if (result['status'] === 'edit') {
           this.editData(result);
         }
-        // 更新資料
-        this.updateData();
       }
     });
   }
@@ -157,6 +161,9 @@ export class RecordFormComponent {
     this.apiSVC.post('/api/upload/create_data', req_body).then((res) => {
       alert(res['data']);
     })
+
+    // 更新資料
+    this.updateData();
   }
 
   // 編輯資料
@@ -193,40 +200,49 @@ export class RecordFormComponent {
     this.apiSVC.post('/api/upload/update_data', req_body).then((res) => {
       alert(res['data']);
     })
+
+    // 更新資料
+    this.updateData();
   }
 
   // 刪除資料
-    delete(data) {
-      let req_body = {};
-      if (this.selectedTheme === '收支紀錄') {
-        req_body = {
-          id: data['id'],
-          big_type: '收支'
-        }
-      } else if(this.selectedTheme === '預算編列') {
-        req_body = {
-          id: data['id'],
-          big_type: '預算'
-        }
+  delete(data) {
+    let req_body = {};
+    if (this.selectedTheme === '收支紀錄') {
+      req_body = {
+        id: data['id'],
+        big_type: '收支'
       }
-
-      this.apiSVC.post('/api/upload/delete_data', req_body).then((res) => {
-        alert(res['data']);
-      })
-
-      // 更新資料
-      this.updateData();
+    } else if(this.selectedTheme === '預算編列') {
+      req_body = {
+        id: data['id'],
+        big_type: '預算'
+      }
     }
+
+    this.apiSVC.post('/api/upload/delete_data', req_body).then((res) => {
+      alert(res['data']);
+    })
 
     // 更新資料
-    updateData() {
-      if (this.selectedTheme === '收支紀錄') {
-        localStorage.setItem('eachDayData', JSON.stringify(this.eachDayData));
-      } else if (this.selectedTheme === '預算編列') {
-        localStorage.setItem('eachMonthBudget', JSON.stringify(this.eachMonthBudget));
-      }
-      this.getData(); // 重新跑出頁面資料
+    this.updateData();
+  }
+
+  // 更新資料
+  updateData() {
+    // 重新撈資料
+    if (this.selectedTheme === '收支紀錄') {
+      this.apiSVC.get('/api/upload/record_ie').then((data: any) => {
+        this.centerSVC['eachDayData'] = data['data'];
+        this.getData(); // 重新跑頁面
+      });
+    } else if(this.selectedTheme === '預算編列') {
+      this.apiSVC.get('/api/upload/record_bg').then((data: any) => {
+        this.centerSVC['eachMonthBudget'] = data['data'];
+        this.getData(); // 重新跑頁面
+      });
     }
+  }
 
   // 開啟/結束編輯
   editControl() {

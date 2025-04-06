@@ -19,6 +19,7 @@ export class CenterService {
   eachDateTotal$ = new Subject();
   eachDateRank$ = new Subject();
   detailRank$ = new Subject();
+  isDataLoaded$ = new Subject();
 
   eachDayData;
   eachMonthBudget;
