@@ -17,10 +17,12 @@ from server.utils.responses import response_with
 
 app = Flask(__name__)
 # 允許特定來源的請求
-CORS(app, origins=[
-    "https://money-tracking-demo.netlify.app",
-    # "http://localhost:4200"  # 開發用
-])
+# CORS(app, origins=[
+#     "https://money-tracking-demo.netlify.app",
+#     "http://localhost:4200"  # 開發用
+# ])
+
+CORS(app, origins=["*"])
 
 app_config = DevelopmentConfig
 
