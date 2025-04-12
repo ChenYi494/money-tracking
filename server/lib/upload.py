@@ -192,7 +192,7 @@ def delete_data(request):
         data_id = data.get("id")
 
         # 查找該筆資料
-        if data_type in ["收入", "支出"]:
+        if data_type == "收支":
             selected_data = db.session.get(Upload_Ex_In, data_id)
         else:
             selected_data = db.session.get(Upload_Bg, data_id)
