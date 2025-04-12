@@ -221,7 +221,6 @@ def detail_rank(request):
         return response_with(resp.SERVER_ERROR_500, message="計算錯誤")
 
 
-
 # 取得篩選參數
 def get_data(request):
     data = request.get_json()

@@ -17,12 +17,11 @@ from server.utils.responses import response_with
 
 app = Flask(__name__)
 # 允許特定來源的請求
-# CORS(app, origins=[
-#     "https://money-tracking-demo.netlify.app",
-#     "http://localhost:4200"  # 開發用
-# ])
-
-CORS(app, origins=["*"])
+CORS(app, origins=[
+    "https://money-tracking-demo.netlify.app",  # 前端
+    "https://www.cron-job.org",  # 排程
+    # "http://localhost:4200"  # 開發用
+])
 
 app_config = DevelopmentConfig
 
@@ -43,6 +42,12 @@ app.register_blueprint(users_routes, url_prefix='/api/users')
 app.register_blueprint(category_routes, url_prefix='/api/category')
 app.register_blueprint(upload_routes, url_prefix='/api/upload')
 app.register_blueprint(analyze_routes, url_prefix='/api/analyze')
+
+
+# ping(render冷啟動解決測試)
+@app.route('/ping', methods=['GET'])
+def get_users():
+    return response_with(resp.SUCCESS_200, value={"data": '成功定時觸發'})
 
 
 if __name__ == "__main__":
