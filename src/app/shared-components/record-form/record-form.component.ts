@@ -142,11 +142,10 @@ export class RecordFormComponent {
         commit: result['data']['commit'],
         update_time: result['data']['update_time'],
         user: "admin",
-        big_type: '收支'
       }
     } else if(this.selectedTheme === '預算編列') {
       req_body = {
-        type: '支出',
+        type: '預算',
         category: result['data']['category'],
         name: '',
         month: result['data']['month'],
@@ -154,7 +153,6 @@ export class RecordFormComponent {
         commit: result['data']['commit'],
         update_time: result['data']['update_time'],
         user: "admin",
-        big_type: '預算'
       }
     }
 
@@ -179,7 +177,6 @@ export class RecordFormComponent {
         commit: result['data']['commit'],
         update_time: result['data']['update_time'],
         user: 'admin',
-        big_type: '收支',
         id: result['data']['id']
       }
     } else if(this.selectedTheme === '預算編列') {
@@ -192,7 +189,6 @@ export class RecordFormComponent {
         commit: result['data']['commit'],
         update_time: result['data']['update_time'],
         user: 'admin',
-        big_type: '預算',
         id: result['data']['id']
       }
     }
@@ -210,13 +206,13 @@ export class RecordFormComponent {
     let req_body = {};
     if (this.selectedTheme === '收支紀錄') {
       req_body = {
+        type: '收支',
         id: data['id'],
-        big_type: '收支'
       }
     } else if(this.selectedTheme === '預算編列') {
       req_body = {
+        type: '預算',
         id: data['id'],
-        big_type: '預算'
       }
     }
 

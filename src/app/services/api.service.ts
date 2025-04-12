@@ -9,7 +9,6 @@ const config = {
   reqHeader: new HttpHeaders({
     'Content-Type': 'application/json',
     'access-control-allow-origin': '*',
-    authorization: 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGVzdCIsImV4cCI6MTc0Mzg0NTkwMn0.weu8pCfpJFIAevfq_KkFK9d-ZKRW3BQy9-lFon9jbuc', // JWT放這裡
     // authorization: 'Bearer ' + localStorage.getItem('token'), // JWT放這裡
   }),
 };
@@ -24,6 +23,10 @@ export class ApiService {
     private http: HttpClient,
     private message: NzMessageService
   ) {}
+
+  public set_token(token: string) {
+    config.reqHeader = config.reqHeader.set('authorization', 'Bearer ' + token); // JWT放這裡
+  }
 
   // get方法
   public get(url: string): Promise<any> {
