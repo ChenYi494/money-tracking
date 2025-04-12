@@ -45,12 +45,6 @@ app.register_blueprint(upload_routes, url_prefix='/api/upload')
 app.register_blueprint(analyze_routes, url_prefix='/api/analyze')
 
 
-# ping(render冷啟動解決測試)
-@app.route('/ping', methods=['GET'])
-def get_users():
-    return response_with(resp.SUCCESS_200, value={"data": '成功定時觸發'})
-
-
 if __name__ == "__main__":
     print('server run on port:1004')
     serve(app, host='0.0.0.0', port=1004)

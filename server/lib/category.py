@@ -1,80 +1,77 @@
 # -*- coding: utf-8 -*-
-import os
 import pandas as pd
-from sqlalchemy import text
-from sqlalchemy import delete
-from sqlalchemy.exc import SQLAlchemyError
-from functools import reduce
+from sqlalchemy import delete, and_
 from ..model.category import Category
 from ..model.upload import Upload_Ex_In, Upload_Bg
 from ..utils import responses as resp
 from ..utils.responses import response_with
-# from ..utils.sql_build import sql_insert, sql_update, sql_delete, sql_select
 from ..utils.database import db
-from server.model.category import Category
 
 
 # 取得所有分類
 def category_info():
-    df = pd.read_sql('category', con=db.engine)
-    return response_with(resp.SUCCESS_200, value={"data": df.to_dict('records')})
+    try:
+        df = pd.read_sql("category", con=db.engine)
+        return response_with(resp.SUCCESS_200, value={"data": df.to_dict("records")})
+    except Exception as e:
+        print(f"讀取資料錯誤: {e}")
+        return response_with(resp.SERVER_ERROR_500, message="讀取分類資料失敗")
 
 
 # 新增一筆分類
 def create_category(request):
     try:
         data = request.get_json()
+        category_type = data.get("type")
+        category_name = data.get("name")
 
-        # 檢查必填欄位
-        if not data.get('type') or not data.get('name'):
-            return response_with(resp.BAD_REQUEST_400, value={"data": '參數缺失'})
+        # 檢查必填參數
+        if not data.get("type") or not data.get("name"):
+            return response_with(resp.BAD_REQUEST_400, value={"data": "參數缺失"})
 
         # 建立新的分類資料
-        new_data = Category(
-            type=data.get('type'),
-            name=data.get('name')
-        )
+        new_data = Category(type=category_type, name=category_name)
 
         # 寫入資料庫
         db.session.add(new_data)
         db.session.commit()
 
-        return response_with(resp.SUCCESS_200, value={"data": '成功新增一筆分類'})
+        return response_with(resp.SUCCESS_200, value={"data": "成功新增一筆分類"})
 
     except Exception as e:
+        print(f"新增分類錯誤：{e}")
         db.session.rollback()
-        return response_with(resp.SERVER_ERROR_500, value={"data": '新增失敗，請重新操作'})
+        return response_with(resp.SERVER_ERROR_500, value={"data": "新增失敗，請重新操作"})
 
 
 # 刪除一筆分類
 def delete_category(request):
     try:
         data = request.get_json()
-        category_id = data.get('id')
+        category_id = data.get("id")
 
         # 查找該筆資料
-        category = db.session.get(Category, category_id)
-
-        if not category:
-            return response_with(resp.SERVER_ERROR_404, value={"data": '該分類不存在'})
+        selected_category = db.session.get(Category, category_id)
+        if not selected_category:
+            return response_with(resp.SERVER_ERROR_404, value={"data": "該分類不存在"})
 
         # 確保category屬於當前session
-        category = db.session.merge(category)
+        selected_category = db.session.merge(selected_category)
 
         # 刪除該筆資料
-        db.session.delete(category)
+        db.session.delete(selected_category)
 
         # 刪除該分類底下的資料紀錄
-        name = category.name
-        db.session.execute(delete(Upload_Ex_In).where(Upload_Ex_In.category == name))
-        db.session.execute(delete(Upload_Bg).where(Upload_Bg.category == name))
-
+        category_type = selected_category.type
+        category_name = selected_category.name
+        db.session.execute(delete(Upload_Ex_In).where(and_(Upload_Ex_In.type == category_type, Upload_Ex_In.category == category_name)))
+        db.session.execute(delete(Upload_Bg).where(and_(Upload_Bg.type == category_type, Upload_Bg.category == category_name)))
         db.session.commit()
-
-        return response_with(resp.SUCCESS_200, value={"data": '成功刪除一筆分類'})
+        return response_with(resp.SUCCESS_200, value={"data": "成功刪除一筆分類"})
 
     except Exception as e:
+        print(f"刪除分類錯誤：{e}")
         db.session.rollback()
-        return response_with(resp.SERVER_ERROR_500, value={"data": '刪除失敗，請重新操作'})
+        return response_with(resp.SERVER_ERROR_500, value={"data": "刪除失敗，請重新操作"})
 
 

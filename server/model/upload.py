@@ -1,7 +1,7 @@
 from server.extensions import db
 
 
-# 紀錄上傳資料表(收支)
+# 收支紀錄上傳資料表
 class Upload_Ex_In(db.Model):
     __tablename__ = 'upload_in_ex_data'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')
@@ -15,7 +15,7 @@ class Upload_Ex_In(db.Model):
     user = db.Column(db.String(20), comment='使用者')
 
 
-# 紀錄上傳資料表(預算)
+# 預算紀錄上傳資料表
 class Upload_Bg(db.Model):
     __tablename__ = 'upload_bg_data'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')

@@ -1,182 +1,185 @@
 # -*- coding: utf-8 -*-
-import os
 import pandas as pd
-from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
-from functools import reduce
-from ..model.category import Category
+from ..model.upload import Upload_Ex_In, Upload_Bg
 from ..utils import responses as resp
 from ..utils.responses import response_with
-# from ..utils.sql_build import sql_insert, sql_update, sql_delete, sql_select
 from ..utils.database import db
-from server.model.upload import Upload_Ex_In, Upload_Bg
 
 
 # 取得所有收支上傳紀錄
 def record_ie():
-    # 讀取兩張表
-    df = pd.read_sql('upload_in_ex_data', con=db.engine)
-    df['update_time'] = df['update_time'].astype(str)
+    try:
+        # 讀取資料表
+        df = pd.read_sql("upload_in_ex_data", con=db.engine)
+        df["update_time"] = df["update_time"].astype(str)
 
-    result_list = []
+        # 以日期分組
+        result_list = []
+        for date, group in df.groupby("date"):
+            total_income = 0
+            total_expend = 0
+            income_detail = []
+            expend_detail = []
 
-    # 以日期分組
-    for date, group in df.groupby('date'):
-        total_income = 0
-        total_expend = 0
-        income_detail = []
-        expend_detail = []
+            for _, row in group.iterrows():
+                each_data = {
+                    "id": row["id"],
+                    "type": row["type"],
+                    "category": row["category"],
+                    "name": row["name"],
+                    "data": row["cost"],
+                    "commit": row["commit"],
+                    "update_time": row["update_time"]
+                }
 
-        income_index = 1
-        expend_index = 1
+                if row["type"] == "收入":
+                    total_income += row["cost"]
+                    income_detail.append(each_data)
+                else:
+                    total_expend += row["cost"]
+                    expend_detail.append(each_data)
 
-        for _, row in group.iterrows():
-            each_data = {
-                "id": row["id"],
-                "type": "income" if row["type"] == "收入" else "expend",
-                "category": row["category"],
-                "name": row["name"],
-                "data": row["cost"],
-                "commit": row.get("commit", ""),  # 沒有則預設空字串
-                "update_time": row["update_time"]
-            }
+            result_list.append({
+                "date": date,
+                "total_income": total_income,
+                "total_expend": total_expend,
+                "income_detail": income_detail,
+                "expend_detail": expend_detail
+            })
 
-            if row["type"] == "收入":
-                income_index += 1
-                total_income += row["cost"]
-                income_detail.append(each_data)
-            else:
-                expend_index += 1
-                total_expend += row["cost"]
-                expend_detail.append(each_data)
-
-        result_list.append({
-            "date": date,
-            "total_income": total_income,
-            "total_expend": total_expend,
-            "income_detail": income_detail,
-            "expend_detail": expend_detail
-        })
-
-    return response_with(resp.SUCCESS_200, value={"data": result_list})
+        return response_with(resp.SUCCESS_200, value={"data": result_list})
+    except Exception as e:
+        print(f"讀取資料錯誤: {e}")
+        return response_with(resp.SERVER_ERROR_500, message="讀取收支資料失敗")
 
 
 # 取得所有預算上傳紀錄
 def record_bg():
-    # 讀取兩張表
-    df = pd.read_sql('upload_bg_data', con=db.engine)
-    df['update_time'] = df['update_time'].astype(str)
+    try:
+        # 讀取資料表
+        df = pd.read_sql("upload_bg_data", con=db.engine)
+        df["update_time"] = df["update_time"].astype(str)
 
-    result_list = []
+        # 以月份分組
+        result_list = []
+        for month, group in df.groupby("month"):
+            total_budget = 0
+            budget_detail = []
 
-    # 以日期分組
-    for month, group in df.groupby('month'):
-        total_budget = 0
-        budget_detail = []
+            for _, row in group.iterrows():
+                each_data = {
+                    "id": row["id"],
+                    "type": row["type"],
+                    "category": row["category"],
+                    "name": row["name"],
+                    "data": row["cost"],
+                    "commit": row["commit"],
+                    "update_time": row["update_time"]
+                }
 
-        budget_index = 1
+                total_budget += row["cost"]
+                budget_detail.append(each_data)
 
-        for _, row in group.iterrows():
-            each_data = {
-                "id": row["id"],
-                "type": "budget",
-                "category": row["category"],
-                "name": row["name"],
-                "data": row["cost"],
-                "commit": row.get("commit", ""),  # 沒有則預設空字串
-                "update_time": row["update_time"]
-            }
+            result_list.append({
+                "month": month,
+                "total_budget": total_budget,
+                "budget_detail": budget_detail,
+            })
 
-            budget_index += 1
-            total_budget += row["cost"]
-            budget_detail.append(each_data)
-
-        result_list.append({
-            "month": month,
-            "total_budget": total_budget,
-            "budget_detail": budget_detail,
-        })
-
-    return response_with(resp.SUCCESS_200, value={"data": result_list})
+        return response_with(resp.SUCCESS_200, value={"data": result_list})
+    except Exception as e:
+        print(f"讀取資料錯誤: {e}")
+        return response_with(resp.SERVER_ERROR_500, message="讀取預算資料失敗")
 
 
 # 新增一筆紀錄
 def create_data(request):
     try:
         data = request.get_json()
+        data_type = data.get("type")
+        category = data.get("category"),
+        name = data.get("name"),
+        date = data.get("date"),  # 收支
+        month = data.get("month"),  # 預算
+        cost = data.get("cost"),
+        commit = data.get("commit"),
+        update_time = data.get("update_time"),
+        user = data.get("user")
 
-        if data.get('big_type') == '預算':
-            # 建立新的分類資料
-            new_data = Upload_Bg(
-                type=data.get('type'),
-                category=data.get('category'),
-                name=data.get('name'),
-                month=data.get('month'),
-                cost=data.get('cost'),
-                commit=data.get('commit'),
-                update_time=data.get('update_time'),
-                user=data.get('user'),
+        # 建立新的分類資料
+        if data_type in ["收入", "支出"]:
+            new_data = Upload_Ex_In(
+                type=data_type,
+                category=category,
+                name=name,
+                date=date,
+                cost=cost,
+                commit=commit,
+                update_time=update_time,
+                user=user
             )
         else:
-            # 建立新的分類資料
-            new_data = Upload_Ex_In(
-                type=data.get('type'),
-                category=data.get('category'),
-                name=data.get('name'),
-                date=data.get('date'),
-                cost=data.get('cost'),
-                commit=data.get('commit'),
-                update_time=data.get('update_time'),
-                user=data.get('user'),
+            new_data = Upload_Bg(
+                type=data_type,
+                category=category,
+                name=name,
+                month=month,
+                cost=cost,
+                commit=commit,
+                update_time=update_time,
+                user=user
             )
 
         # 寫入資料庫
         db.session.add(new_data)
         db.session.commit()
 
-        return response_with(resp.SUCCESS_200, value={"data": '成功新增一筆資料'})
+        return response_with(resp.SUCCESS_200, value={"data": "成功新增一筆資料"})
 
     except Exception as e:
+        print(f"新增資料錯誤：{e}")
         db.session.rollback()
-        return response_with(resp.SERVER_ERROR_500, value={"data": '新增失敗，請重新操作'})
+        return response_with(resp.SERVER_ERROR_500, value={"data": "新增資料失敗，請重新操作"})
 
 
 # 更新一筆紀錄
 def update_data(request):
     try:
         data = request.get_json()
-        record_id = data.get('id')
+        data_type = data.get("type")
+        data_id = data.get("id")
 
-        if not record_id:
-            return response_with(resp.BAD_REQUEST_400, value={"data": "缺少 id"})
+        if not data_type or not data_id:
+            return response_with(resp.BAD_REQUEST_400, value={"data": "參數缺失"})
 
-        # 根據big_type選擇資料表
-        if data.get('big_type') == '預算':
-            record = db.session.query(Upload_Bg).filter_by(id=record_id).first()
+        # 依據type選擇資料表
+        if data_type in ["收入", "支出"]:
+            selected_data = db.session.query(Upload_Ex_In).filter_by(id=data_id).first()
         else:
-            record = db.session.query(Upload_Ex_In).filter_by(id=record_id).first()
+            selected_data = db.session.query(Upload_Bg).filter_by(id=data_id).first()
 
-        if not record:
+        if not selected_data:
             return response_with(resp.SERVER_ERROR_404, value={"data": "該資料不存在"})
 
         # 更新欄位資料
-        record.type = data.get('type', record.type)
-        record.category = data.get('category', record.category)
-        record.name = data.get('name', record.name)
-        record.cost = data.get('cost', record.cost)
-        record.commit = data.get('commit', record.commit)
-        record.update_time = data.get('update_time', record.update_time)
-        record.user = data.get('user', record.user)
+        selected_data.type = data.get("type", selected_data.type)
+        selected_data.category = data.get("category", selected_data.category)
+        selected_data.name = data.get("name", selected_data.name)
+        selected_data.cost = data.get("cost", selected_data.cost)
+        selected_data.commit = data.get("commit", selected_data.commit)
+        selected_data.update_time = data.get("update_time", selected_data.update_time)
+        selected_data.user = data.get("user", selected_data.user)
 
-        if data.get('big_type') == '預算':
-            record.month = data.get('month', record.month)
+        if data_type in ["收入", "支出"]:
+            selected_data.date = data.get("date", selected_data.date)
         else:
-            record.date = data.get('date', record.date)
+            selected_data.month = data.get("month", selected_data.month)
 
         db.session.commit()
         return response_with(resp.SUCCESS_200, value={"data": "成功更新一筆資料"})
 
     except Exception as e:
+        print(f"更新資料錯誤：{e}")
         db.session.rollback()
         return response_with(resp.SERVER_ERROR_500, value={"data": "更新失敗，請重新操作"})
 
@@ -185,28 +188,28 @@ def update_data(request):
 def delete_data(request):
     try:
         data = request.get_json()
-        data_id = data.get('id')
+        data_type = data.get("type")
+        data_id = data.get("id")
 
-        if data.get('big_type') == '預算':
-            # 查找該筆資料
-            data = db.session.get(Upload_Bg, data_id)
-
+        # 查找該筆資料
+        if data_type in ["收入", "支出"]:
+            selected_data = db.session.get(Upload_Ex_In, data_id)
         else:
-            # 查找該筆資料
-            data = db.session.get(Upload_Ex_In, data_id)
+            selected_data = db.session.get(Upload_Bg, data_id)
 
-        if not data:
-            return response_with(resp.SERVER_ERROR_404, value={"data": '該資料不存在'})
+        if not selected_data:
+            return response_with(resp.SERVER_ERROR_404, value={"data": "該資料不存在"})
 
-        # 確保category屬於當前session
-        data = db.session.merge(data)
+        # 確保data屬於當前session
+        selected_data = db.session.merge(selected_data)
 
         # 刪除該筆資料
-        db.session.delete(data)
+        db.session.delete(selected_data)
         db.session.commit()
 
-        return response_with(resp.SUCCESS_200, value={"data": '成功刪除一筆資料'})
+        return response_with(resp.SUCCESS_200, value={"data": "成功刪除一筆資料"})
 
     except Exception as e:
+        print(f"刪除資料錯誤：{e}")
         db.session.rollback()
-        return response_with(resp.SERVER_ERROR_500, value={"data": '刪除失敗，請重新操作'})
+        return response_with(resp.SERVER_ERROR_500, value={"data": "刪除失敗，請重新操作"})

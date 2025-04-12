@@ -1,99 +1,57 @@
 # -*- coding: utf-8 -*-
-
 from flask import make_response, jsonify
-from flask.json import JSONEncoder
-from datetime import datetime
 
 
-class CustomJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        try:
-            if isinstance(obj, datetime):
-                return obj.strftime('%Y-%m-%d %H:%M:%S')
-            else:
-                iterable = iter(obj)
-                return list(iterable)
-        except Exception as e:
-            return JSONEncoder.default(self, obj)
-
-
-INVALID_FIELD_NAME_SENT_422 = {
-    "http_code": 422,
-    "code": "invalidField",
-    "message": "Invalid fields found"
+# 請求成功(伺服器回傳資料)
+SUCCESS_200 = {
+    "http_code": 200,
+    "code": "success"
 }
 
+# 請求錯誤(參數缺失/格式錯誤)
+BAD_REQUEST_400 = {
+    "http_code": 400,
+    "code": "badRequest",
+    "message": "Bad request!"
+}
+
+# 未經授權
+UNAUTHORIZED_401 = {
+    "http_code": 401,
+    "code": "notAuthorized",
+    "message": "Invalid authentication!"
+}
+
+# 沒有權限
+FORBIDDEN_403 = {
+    "http_code": 403,
+    "code": "notAuthorized",
+    "message": "You are not authorized to execute this!"
+}
+
+# 找不到資源(讀表或其他請求找不到對應內容)
+SERVER_ERROR_404 = {
+    "http_code": 404,
+    "code": "notFound",
+    "message": "Resource not found!"
+}
+
+# 請求錯誤(格式正確，但內容不正確)
 INVALID_INPUT_422 = {
     "http_code": 422,
     "code": "invalidInput",
     "message": "Invalid input"
 }
 
-MISSING_PARAMETERS_422 = {
-    "http_code": 422,
-    "code": "missingParameter",
-    "message": "Missing parameters."
-}
-
-BAD_REQUEST_400 = {
-    "http_code": 400,
-    "code": "badRequest",
-    "message": "Bad request"
-}
-
+# 伺服器端處理請求發生錯誤
 SERVER_ERROR_500 = {
     "http_code": 500,
     "code": "serverError",
     "message": "Server error"
 }
 
-SERVER_ERROR_404 = {
-    "http_code": 404,
-    "code": "notFound",
-    "message": "Resource not found"
-}
 
-FORBIDDEN_403 = {
-    "http_code": 403,
-    "code": "notAuthorized",
-    "message": "You are not authorised to execute this."
-}
-
-SERVER_ERROR_401 = {
-    "http_code": 401,
-    "code": "notAuthorized",
-    "message": "Invalid authentication."
-}
-
-UNAUTHORIZED_401 = {
-    "http_code": 401,
-    "code": "notAuthorized",
-    "message": "Invalid authentication."
-}
-
-NOT_FOUND_HANDLER_404 = {
-    "http_code": 404,
-    "code": "notFound",
-    "message": "route not found"
-}
-
-SUCCESS_200 = {
-    'http_code': 200,
-    'code': 'success'
-}
-
-SUCCESS_201 = {
-    'http_code': 201,
-    'code': 'success'
-}
-
-SUCCESS_204 = {
-    'http_code': 204,
-    'code': 'success'
-}
-
-
-# 後製回傳資料
+# 回傳格式
 def response_with(response, value=None, message=None, error=None, headers={}, pagination=None):
     result = {}
     if value is not None:
