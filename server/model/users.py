@@ -1,4 +1,4 @@
-from server.extensions import db
+from ..utils.database import db
 
 
 # 使用者資料表

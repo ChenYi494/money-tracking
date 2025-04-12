@@ -1,4 +1,4 @@
-from server.extensions import db
+from ..utils.database import db
 
 
 # 收支種類資料表

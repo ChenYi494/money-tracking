@@ -3,8 +3,8 @@ from flask import Flask
 from flask_cors import CORS
 # config
 from server.config.config import DevelopmentConfig
-# model(從extension檔案共同引入)
-from server.extensions import db
+# model(從database檔案共同引入)
+from server.utils.database import db
 # routes
 from server.route.users import users_routes
 from server.route.category import category_routes

@@ -1,4 +1,4 @@
-from server.extensions import db
+from ..utils.database import db
 
 
 # 收支紀錄上傳資料表
