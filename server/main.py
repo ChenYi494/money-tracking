@@ -46,7 +46,7 @@ app.register_blueprint(analyze_routes, url_prefix='/api/analyze')
 
 # ping(render冷啟動解決測試)
 @app.route('/ping', methods=['GET'])
-def get_users():
+def ping():
     return response_with(resp.SUCCESS_200, value={"data": '成功定時觸發'})
 
 

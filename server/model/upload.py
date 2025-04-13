@@ -1,10 +1,12 @@
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from ..utils.database import db
 
 
 # 收支紀錄上傳資料表
 class Upload_Ex_In(db.Model):
     __tablename__ = 'upload_in_ex_data'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment='編號')
     type = db.Column(db.String(20), comment='種類')
     category = db.Column(db.String(20), comment='分類名稱')
     name = db.Column(db.String(20), comment='品項')
@@ -18,7 +20,7 @@ class Upload_Ex_In(db.Model):
 # 預算紀錄上傳資料表
 class Upload_Bg(db.Model):
     __tablename__ = 'upload_bg_data'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment='編號')
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment='編號')
     type = db.Column(db.String(20), comment='種類')
     category = db.Column(db.String(20), comment='分類名稱')
     name = db.Column(db.String(20), comment='品項')
