@@ -11,14 +11,14 @@
 
 // scrollbar
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 8.5px;
+  height: 8.5px;
   background-color: rgba(108, 117, 125, 0.25); // 滾動條背景
   border-radius: 36px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #6c757d; // 滾動條本身
+  background-color: rgba(206, 212, 218, 0.75); // 滾動條本身
   border-radius: 36px;
 }
 

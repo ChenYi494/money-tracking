@@ -362,7 +362,9 @@ export class AnalyzeComponent {
       // 每日總收入/支出資料
       this.apiSVC.post('/api/analyze/each_date_total', req_body).then((res) => {
         this.centerSVC.eachDateTotal$.next({
-          data: res['data']
+          data: res['data'],
+          start_date: start_date,
+          end_date: end_date,
         })
       })
       // 每日支出前兩名

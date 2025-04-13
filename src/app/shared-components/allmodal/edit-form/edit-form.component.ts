@@ -84,6 +84,8 @@ export class EditFormComponent {
         this.name === '' || this.data === null || this.date === null
       ) {
         alert('資料未填寫完整');
+      } else if(this.name.length > 8) {
+        alert('品項名稱過長(至多八個文字)');
       } else {
         result = {
           id: this.id,

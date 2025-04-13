@@ -6,7 +6,7 @@
       <div class="section">
         <div class="data income">
           <div class="title">
-            <p>收入種類</p>
+            <p class="income-title">收入種類</p>
             <div class="btn-test">
               <button class="btn" (click)="createCategory('income')">新增</button>
               @if(!deleteIncomeStatus) {
@@ -28,13 +28,13 @@
         </div>
         <div class="data expend">
           <div class="title">
-            <p>支出種類</p>
+            <p class="expend-title">支出種類</p>
             <div class="btn-test">
               <button class="btn" (click)="createCategory('expend')">新增</button>
               @if(!deleteExpendStatus) {
               <button class="btn" (click)="deleteCategory('expend')">刪除</button>
               } @else {
-              <button class="btn" (click)="saveResult('expend')">儲存</button>
+              <button class="btn" (click)="saveResult('expend')">結束</button>
               }
             </div>
           </div>

@@ -23,15 +23,17 @@ export class EditCategoryComponent {
     @Inject(NZ_MODAL_DATA) public source: any,
   ) {
     this.type = source['type'];
-    this.existData = source['data'];
+    this.existData = source['data'].map(e => e['name']);
   }
 
   // 儲存
   submit() {
-    if (!this.existData.includes(this.name)) {
-      this.modalRef.close({ type: this.type, name: this.name });
-    } else {
+    if (this.existData.includes(this.name)) {
       alert('該分類名稱已存在');
+    } else if(this.name.length > 4) {
+      alert('品項名稱過長(至多四個文字)');
+    } else {
+      this.modalRef.close({ type: this.type, name: this.name });
     }
   }
 

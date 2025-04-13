@@ -65,6 +65,18 @@
       align-items: center;
       margin-bottom: 25px;
       margin-top: 5px;
+
+      .income-title {
+        color: #80ed99;
+        font-size: 22px;
+        font-weight: 500;
+      }
+
+      .expend-title {
+        color: #ef233c;
+        font-size: 22px;
+        font-weight: 500;
+      }
     }
 
     p {
@@ -98,26 +110,17 @@
         width: calc(25% - 16px);
         min-width: 80px;
         height: 36px;
-        border-radius: 18px;
+        border-radius: 12.5px;
         font-size: 16px;
         line-height: 32px;
         margin-bottom: 6px;
         text-align: center;
+        border: 2px solid #b07d62;
+        background-color: #d5bdaf;
 
         span {
           cursor: pointer;
         }
-      }
-
-      .income-item {
-        border: 2px solid #80ed99;
-        background-color: #ddeee1;
-      }
-
-      .expend-item {
-        border: 2px solid #ef233c;
-        ;
-        background-color: #f2c7cc;
       }
     }
   }

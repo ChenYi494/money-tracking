@@ -31,22 +31,25 @@ export class HeaderComponent {
     this.init();
   }
 
-  // 取得所有資料(視況情使用await或forkjoin)
+  // 取得所有資料
   async init() {
-    await this.apiSVC.get('/api/upload/record_ie').then((data: any) => {
-      this.centerSVC['eachDayData'] = data['data'];
+    Promise.all([
+      this.apiSVC.get('/api/upload/record_ie'),
+      this.apiSVC.get('/api/upload/record_bg'),
+      this.apiSVC.get('/api/category/info')
+    ])
+    .then(([ieData, bgData, categoryData]: any[]) => {
+      this.centerSVC['eachDayData'] = ieData['data'];
+      this.centerSVC['eachMonthBudget'] = bgData['data'];
+      this.centerSVC['allIncomeCategory'] = categoryData['data'].filter(e => e['type'] === '收入');
+      this.centerSVC['allExpendCategory'] = categoryData['data'].filter(e => e['type'] === '支出');
+    })
+    .finally(() => {
+      // 視況情看是要在header還是分頁跑loading
+      setTimeout(() => {
+        this.centerSVC.isDataLoaded$.next(true);
+        this.isLoading = false;
+      }, 1000);
     });
-    await this.apiSVC.get('/api/upload/record_bg').then((data: any) => {
-      this.centerSVC['eachMonthBudget'] = data['data'];
-    });
-    await this.apiSVC.get('/api/category/info').then((data: any) => {
-      this.centerSVC['allIncomeCategory'] = data['data'].filter(e => e['type'] === '收入');
-      this.centerSVC['allExpendCategory'] = data['data'].filter(e => e['type'] === '支出');
-    });
-    // 視況情看是要在header還是分頁跑loading
-    setTimeout(() => {
-      this.centerSVC.isDataLoaded$.next(true);
-      this.isLoading = false;
-    }, 1000)
   }
 }

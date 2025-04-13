@@ -40,6 +40,7 @@ export class WaterComponent implements OnInit, OnDestroy {
   rate = 9999;
   textColor: string = '';
   waterColor: string[] = [];
+  waterColor2: string = '';
 
   remainBudget = 0;
 
@@ -60,9 +61,7 @@ export class WaterComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res: any) => {
         let data = res['data'];
-        this.remainBudget = data['value'];
-        this.rate = Math.round(data['percent'] * 100);
-        // this.setWater();
+        this.dataSetting(data);
       })
   }
 
@@ -86,6 +85,21 @@ export class WaterComponent implements OnInit, OnDestroy {
     //   this.rate = this.data['default'];
     //   this.setWater();
     // }
+  }
+
+  dataSetting(data) {
+    this.remainBudget = data['value'];
+    this.rate = Math.round(data['percent'] * 100);
+    if (this.rate > 70) {
+      this.textColor = '#14746f';
+      this.waterColor2 = 'rgba(224, 235, 255, 0.1)';
+    } else if (this.rate <= 70 && this.rate >= 30) {
+      this.textColor = '#de9610';
+      this.waterColor2 = 'rgba(255, 242, 213, 0.1)';
+    } else {
+      this.textColor = '#F06449';
+      this.waterColor2 = 'rgba(253, 223, 235, 0.1)';
+    }
   }
 
   // // 水球圖設定

@@ -10,6 +10,8 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 // service
 import { CenterService } from '../../services/center.service';
 import { ApiService } from '../../services/api.service';
+// moment
+import moment from 'moment';
 
 @Component({
   selector: 'app-record-form',
@@ -83,7 +85,7 @@ export class RecordFormComponent {
         // 卡片設定
         this.cardData = this.eachDayData.map(e => ({
           ...e,
-          date: e.date.replaceAll('-', '/'),
+          date: `${e.date} (${this.centerSVC.week_type[moment(e['date']).weekday()]})`.replaceAll('-', '/'),
           income_detail: e.income_detail.map(el => ({ ...el, type: '收入', date: e.date.replaceAll('-', '/') })),
           expend_detail: e.expend_detail.map(el => ({ ...el, type: '支出', date: e.date.replaceAll('-', '/') }))
         }));

@@ -70,6 +70,7 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
           type: result['type'] === 'income' ? '收入' : '支出',
           name: result['name']
         }
+
         this.apiSVC.post('/api/category/create', req_body).then((res) => {
           alert(res['data']);
         })
