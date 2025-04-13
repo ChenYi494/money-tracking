@@ -54,6 +54,14 @@ export const analyze = [
     data: {
       default: [
         {
+          "item": "咖啡",
+          "value": 6
+        },
+        {
+          "item": "巧克力",
+          "value": 4
+        },
+        {
           "item": "健康餐",
           "value": 2
         },
@@ -87,28 +95,24 @@ export const analyze = [
     name: '每日收入與支出分析',
     tips: '',
     data: {
-      default: [
-        {
-          "total_income": 6000,
-          "total_expend": 275,
-          "date": "2024-12-01"
+      default: {
+        "2025-04-01": {
+          "income": 0,
+          "expend": 1784
         },
-        {
-          "total_income": 0,
-          "total_expend": 225,
-          "date": "2024-12-02"
+        "2025-04-02": {
+          "income": 49021,
+          "expend": 320
         },
-        {
-          "total_income": 0,
-          "total_expend": 840,
-          "date": "2024-12-03"
+        "2025-04-03": {
+          "income": 0,
+          "expend": 595
         },
-        {
-          "total_income": 2000,
-          "total_expend": 0,
-          "date": "2024-12-04"
-        }
-      ],
+        "2025-04-04": {
+          "income": 0,
+          "expend": 99
+        },
+      }
     }
   },
   {
@@ -119,94 +123,28 @@ export const analyze = [
     name: '每日花費前兩名品項',
     tips: '',
     data: {
-      default: [
-        {
-          "expend_detail": [
-            {
-              "id": "2024-12-01_ex_3",
-              "type": "expend",
-              "category": "晚餐",
-              "name": "健康餐",
-              "data": 120,
-              "commit": "",
-              "update_time": "2024-12-01 21:00:00"
-            },
-            {
-              "id": "2024-12-01_ex_2",
-              "type": "expend",
-              "category": "午餐",
-              "name": "麻辣燙",
-              "data": 90,
-              "commit": "",
-              "update_time": "2024-12-01 21:00:00"
-            }
-          ],
-          "date": "2024-12-01"
+      default: {
+        "2025-04-01": {
+          "社交": 1589,
+          "午餐": 130,
+          "飲品": 35,
+          "交通": 30
         },
-        {
-          "expend_detail": [
-            {
-              "id": "2024-12-02_ex_2",
-              "type": "expend",
-              "category": "社交",
-              "name": "聚餐",
-              "data": 450,
-              "commit": "",
-              "update_time": "2024-12-02 22:00:00"
-            },
-            {
-              "id": "2024-12-02_ex_1",
-              "type": "expend",
-              "category": "日用品",
-              "name": "牙刷",
-              "data": 135,
-              "commit": "",
-              "update_time": "2024-12-02 22:00:00"
-            }
-          ],
-          "date": "2024-12-02"
+        "2025-04-02": {
+          "社交": 170,
+          "飲品": 70,
+          "午餐": 50,
+          "交通": 30
         },
-        {
-          "expend_detail": [
-            {
-              "id": "2024-12-03_ex_4",
-              "type": "expend",
-              "category": "社交",
-              "name": "朋友的生日禮物",
-              "data": 500,
-              "commit": "",
-              "update_time": "2024-12-03 21:00:00"
-            },
-            {
-              "id": "2024-12-03_ex_1",
-              "type": "expend",
-              "category": "午餐",
-              "name": "火鍋",
-              "data": 160,
-              "commit": "",
-              "update_time": "2024-12-03 21:00:00"
-            }
-          ],
-          "date": "2024-12-03"
+        "2025-04-03": {
+          "午餐": 230,
+          "飲品": 195,
+          "家裡": 170
         },
-        {
-          "total_income": 2000,
-          "total_expend": 0,
-          "income_detail": [
-            {
-              "id": "2024-12-04_in_1",
-              "type": "income",
-              "category": "投資",
-              "name": "股票",
-              "data": 2000,
-              "commit": "",
-              "update_time": "2024-12-04 23:00:00"
-            }
-          ],
-          "expend_detail": [],
-          "date": "2024-12-04"
+        "2025-04-04": {
+          "午餐": 99
         }
-      ]
+      }
     }
   },
   {

@@ -37,22 +37,6 @@ export class BarRankingComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    // this.centerSVC.filter$
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe((res: any) => {
-    //     let data = [];
-    //     if (this.name === '收入排名') {
-    //       res['data'].forEach(e => {
-    //         data.push(...e['income_detail']);
-    //       })
-    //     } else if (this.name === '支出排名') {
-    //       res['data'].forEach(e => {
-    //         data.push(...e['expend_detail']);
-    //       })
-    //     }
-    //     this.dataCalc(data);
-    //   })
-
     this.centerSVC.rankData$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((res: any) => {

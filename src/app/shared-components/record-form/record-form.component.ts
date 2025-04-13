@@ -3,6 +3,7 @@ import { NgStyle } from '@angular/common';
 // ng-zorro
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 // component
 import { EditFormComponent } from '../allmodal/edit-form/edit-form.component';
 // rxjs
@@ -23,7 +24,6 @@ import moment from 'moment';
 export class RecordFormComponent {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   @Input() selectedTheme: string; // 收支紀錄/預算編列
-  viewMode: string = 'card'; // card/table
   editStatus: boolean = false; // 編輯狀態
   // 原始資料
   eachDayData = [];
@@ -37,6 +37,7 @@ export class RecordFormComponent {
     private modalService: NzModalService,
     private centerSVC: CenterService,
     private apiSVC: ApiService,
+    private message: NzMessageService,
   ) {
     // 從header傳遞資訊確認資料取得完成
     this.centerSVC.isDataLoaded$
@@ -159,7 +160,7 @@ export class RecordFormComponent {
     }
 
     this.apiSVC.post('/api/upload/create_data', req_body).then((res) => {
-      alert(res['data']);
+      this.message.create('success', res['data'], {nzDuration: 2000});
     })
 
     // 更新資料
@@ -196,7 +197,7 @@ export class RecordFormComponent {
     }
 
     this.apiSVC.post('/api/upload/update_data', req_body).then((res) => {
-      alert(res['data']);
+      this.message.create('success', res['data'], {nzDuration: 2000});
     })
 
     // 更新資料
@@ -219,7 +220,7 @@ export class RecordFormComponent {
     }
 
     this.apiSVC.post('/api/upload/delete_data', req_body).then((res) => {
-      alert(res['data']);
+      this.message.create('success', res['data'], {nzDuration: 2000});
     })
 
     // 更新資料

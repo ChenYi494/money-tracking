@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { EditCategoryComponent } from '../../shared-components/allmodal/edit-category/edit-category.component';
 // ng-zorro
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 // rxjs
 import { ReplaySubject, takeUntil } from 'rxjs';
 // service
@@ -31,6 +32,7 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
     private centerSVC: CenterService,
     private modalService: NzModalService,
     private apiSVC: ApiService,
+    private message: NzMessageService,
   ) {
     // 從header傳遞資訊確認資料取得完成
     this.centerSVC.isDataLoaded$
@@ -72,7 +74,7 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
         }
 
         this.apiSVC.post('/api/category/create', req_body).then((res) => {
-          alert(res['data']);
+          this.message.create('success', res['data'], {nzDuration: 2000});
         })
 
         // 更新資料
@@ -88,7 +90,7 @@ export class SystemSettingComponent implements OnInit, OnDestroy {
       id: item['id'],
     }
     this.apiSVC.post('/api/category/delete', req_body).then((res) => {
-       alert(res['data']);
+      this.message.create('success', res['data'], {nzDuration: 2000});
     })
 
 

@@ -28,17 +28,11 @@ export class CardComponent implements OnInit, OnDestroy {
   constructor(
     public drawerService: NzDrawerService,
     public centerSVC: CenterService
-  ) {
+  ) {}
 
-  }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-
-  }
-
-  ngOnDestroy(): void {
-
-  }
+  ngOnDestroy(): void {}
 
   // 開啟自定義modal
   openCustom() {

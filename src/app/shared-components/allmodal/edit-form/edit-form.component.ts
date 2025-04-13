@@ -6,6 +6,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzMessageService } from 'ng-zorro-antd/message';
 // moment
 import moment from 'moment';
 // service
@@ -37,6 +38,7 @@ export class EditFormComponent {
   constructor(
     private centerSVC: CenterService,
     private modalRef: NzModalRef,
+    private message: NzMessageService,
     @Inject(NZ_MODAL_DATA) public source: any,
   ) {
     this.theme = source['theme'];
@@ -83,9 +85,9 @@ export class EditFormComponent {
       if (this.selectedType === '' || this.selectedCategory === '' ||
         this.name === '' || this.data === null || this.date === null
       ) {
-        alert('資料未填寫完整');
+        this.message.create('error', '資料未填寫完整', {nzDuration: 2000});
       } else if(this.name.length > 8) {
-        alert('品項名稱過長(至多八個文字)');
+        this.message.create('error', '品項名稱過長(至多八個字)', {nzDuration: 2000});
       } else {
         result = {
           id: this.id,
@@ -101,7 +103,7 @@ export class EditFormComponent {
       }
     } else if (this.theme === '預算編列') {
       if (this.selectedCategory === '' || this.data === null || this.month === null) {
-        alert('資料未填寫完整');
+        this.message.create('error', '資料未填寫完整', {nzDuration: 2000});
       } else {
         result = {
           id: this.id,

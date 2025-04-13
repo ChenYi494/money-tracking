@@ -1,10 +1,9 @@
 import { Component, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // rxjs
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { filter } from 'rxjs/operators';
 // config
 import { analyze } from '../../shared-components/config';
 import { CustomHostDirective } from '../../shared-components/custom-host.directive';
@@ -19,6 +18,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzMessageService } from 'ng-zorro-antd/message';
 // moment
 import moment from 'moment';
 // component
@@ -63,6 +63,7 @@ export class AnalyzeComponent {
     private renderer: Renderer2,
     private centerSVC: CenterService,
     private apiSVC: ApiService,
+    private message: NzMessageService
   ) {
     // 更新元件
     this.centerSVC.updateCustom$
@@ -80,13 +81,6 @@ export class AnalyzeComponent {
       .subscribe(res => {
         this.isCollapse = res['status'];
       })
-
-    // // 監聽路由變化事件
-    // this.router.events
-    // .pipe(filter((event) => event instanceof NavigationEnd))
-    // .subscribe(() => {
-    //   this.updateClassFromRoute();
-    // });
 
     // 從header傳遞資訊確認資料取得完成
     this.centerSVC.isDataLoaded$
@@ -294,11 +288,13 @@ export class AnalyzeComponent {
 
     // 防呆
     if (selectedInCategory.length === 0) {
-      alert('請至少選擇一種收入類型');
+      this.message.create('error', '請至少選擇一種收入類型', {nzDuration: 2000});
     } else if (selectedExCategory.length === 0) {
-      alert('請至少選擇一種支出類型');
+      this.message.create('error', '請至少選擇一種支出類型', {nzDuration: 2000});
     } else {
-      this.isLoading = true;
+      if(!this.editState) {
+        this.isLoading = true;
+      }
       this.isExpanded1 = false;
       this.isExpanded2 = false;
       this.isExpanded3 = false;
@@ -341,69 +337,23 @@ export class AnalyzeComponent {
       }
 
       // 取得所有分析資料
-      // 當月剩餘預算
-      this.apiSVC.get('/api/analyze/remain_budget').then((res) => {
-        this.centerSVC.remainBudget$.next({
-          data: res['data']
-        })
-      })
-      // 總收入支出結餘
-      this.apiSVC.post('/api/analyze/total', req_body).then((res) => {
-        this.centerSVC.totalData$.next({
-          data: res['data']
-        })
-      })
-      // 收入支出排名
-      this.apiSVC.post('/api/analyze/rank', req_body).then((res) => {
-        this.centerSVC.rankData$.next({
-          data: res['data']
-        })
-      })
-      // 每日總收入/支出資料
-      this.apiSVC.post('/api/analyze/each_date_total', req_body).then((res) => {
-        this.centerSVC.eachDateTotal$.next({
-          data: res['data'],
-          start_date: start_date,
-          end_date: end_date,
-        })
-      })
-      // 每日支出前兩名
-      this.apiSVC.post('/api/analyze/each_date_rank', req_body).then((res) => {
-        this.centerSVC.eachDateRank$.next({
-          data: res['data']
-        })
-      })
-      // 詳細品項排名
-      this.apiSVC.post('/api/analyze/detail_rank', req_body).then((res) => {
-        this.centerSVC.detailRank$.next({
-          data: res['data']
-        })
-      })
-
-      // 非編輯狀態時再跑loading
-      if (!this.editState) {
-        setTimeout(() => {
-          // this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
-          this.isLoading = false;
-        }, 1000)
-      } else {
-        // this.sendResult(resultData, start_date, end_date, monthBudget, monthExpend);
+      Promise.all([
+        this.apiSVC.get('/api/analyze/remain_budget'), // 當月剩餘預算
+        this.apiSVC.post('/api/analyze/total', req_body), // 總收入支出結餘
+        this.apiSVC.post('/api/analyze/rank', req_body), // 收入支出排名
+        this.apiSVC.post('/api/analyze/each_date_total', req_body), // 每日總收入/支出資料
+        this.apiSVC.post('/api/analyze/each_date_rank', req_body), // 每日支出前兩名
+        this.apiSVC.post('/api/analyze/detail_rank', req_body), // 詳細品項排名
+      ]).then(([remainRes, totalRes, rankRes, eachDateTotalRes, eachDateRankRes, detailRankRes]) => {
+        // 傳送訊息
+        this.centerSVC.remainBudget$.next({ data: remainRes['data'] });
+        this.centerSVC.totalData$.next({ data: totalRes['data'] });
+        this.centerSVC.rankData$.next({ data: rankRes['data'] });
+        this.centerSVC.eachDateTotal$.next({ data: eachDateTotalRes['data'], start_date, end_date });
+        this.centerSVC.eachDateRank$.next({ data: eachDateRankRes['data'] });
+        this.centerSVC.detailRank$.next({ data: detailRankRes['data'] });
         this.isLoading = false;
-      }
+      });
     }
-  }
-
-  // 傳送訊息
-  sendResult(resultData, start_date, end_date, monthBudget, monthExpend) {
-    // this.isLoading = false;
-    this.centerSVC.filter$.next({
-      data: resultData,
-      start_date: start_date,
-      end_date: end_date,
-      buget_status: {
-        monthExpend,
-        monthBudget
-      }
-    })
   }
 }

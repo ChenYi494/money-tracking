@@ -37,19 +37,6 @@ export class ValueComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    // this.centerSVC.filter$
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe((res: any) => {
-    //     if (this.name === '總收入') {
-    //       this.quantity = res['data'].reduce((acc, cur) => acc + cur.total_income, 0);
-    //     } else if (this.name === '總支出') {
-    //       this.quantity = res['data'].reduce((acc, cur) => acc + cur.total_expend, 0);
-    //     } else if (this.name === '總結餘') {
-    //       this.quantity = res['data'].reduce((acc, cur) => acc + cur.total_income - cur.total_expend, 0);
-    //     }
-    //     // this.quantity = 1000000;
-    //   })
-
     this.centerSVC.totalData$
     .pipe(takeUntil(this.destroyed$))
     .subscribe((res: any) => {

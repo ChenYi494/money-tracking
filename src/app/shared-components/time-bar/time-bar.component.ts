@@ -41,12 +41,6 @@ export class TimeBarComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    // this.centerSVC.filter$
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe((res: any) => {
-    //     this.chartSetting(res['data']);
-    //   })
-
     this.centerSVC.eachDateRank$
     .pipe(takeUntil(this.destroyed$))
     .subscribe((res: any) => {
@@ -171,7 +165,6 @@ export class TimeBarComponent implements OnInit, OnDestroy {
         {
           type: 'category',
           boundaryGap: true,
-          // data: allDate.map(e => `${e.split('/')[1]}/${e.split('/')[2]}`),
           data: allDate,
           axisTick: {
             show: false

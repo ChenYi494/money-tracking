@@ -30,12 +30,9 @@ export class CustomListComponent {
     public changeDetectorRef: ChangeDetectorRef,
     public drawerRef: NzDrawerRef<object>,
     public centerSVC: CenterService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.cfgs)
-
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -50,9 +47,7 @@ export class CustomListComponent {
       // 新增item class
       this.renderer.addClass(
         componentRef.location.nativeElement,
-        item.size == '1x1' ? 'item1'
-          : item.size == '1x2' ? 'item2'
-            : 'item3'
+        item.size == '1x1' ? 'item1' : item.size == '1x2' ? 'item2' : 'item3'
       );
       // 設定input
       componentRef.instance['idx'] = idx;

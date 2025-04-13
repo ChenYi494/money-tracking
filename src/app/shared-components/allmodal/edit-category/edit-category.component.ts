@@ -5,6 +5,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-edit-category',
@@ -20,6 +21,7 @@ export class EditCategoryComponent {
 
   constructor(
     private modalRef: NzModalRef,
+    private message: NzMessageService,
     @Inject(NZ_MODAL_DATA) public source: any,
   ) {
     this.type = source['type'];
@@ -29,9 +31,9 @@ export class EditCategoryComponent {
   // 儲存
   submit() {
     if (this.existData.includes(this.name)) {
-      alert('該分類名稱已存在');
+      this.message.create('error', '該分類名稱已存在', {nzDuration: 2000});
     } else if(this.name.length > 4) {
-      alert('品項名稱過長(至多四個文字)');
+      this.message.create('error', '分類名稱過長(至多四個字)', {nzDuration: 2000});
     } else {
       this.modalRef.close({ type: this.type, name: this.name });
     }

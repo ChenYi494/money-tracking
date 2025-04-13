@@ -10,8 +10,6 @@ import { CardSetting } from '../interface';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 // service
 import { CenterService } from '../../services/center.service';
-// data
-import { allIncomeCategory, allExpendCategory } from '../data';
 
 @Component({
   selector: 'app-pie-chart',
@@ -39,15 +37,17 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
   // 數量&寫法暫定
   colorList = [
-    '#FF8181',
-    '#FFC04D',
-    '#D093FF',
-    '#54D6FF',
-    '#94FFB8',
-    '#FF7E05',
-    '#FF5330',
-    '#96CD45',
-    '#2B81AF'
+    '#FF6B6B',
+    '#F783AC',
+    '#FFA94D',
+    '#FFD43B',
+    '#FF8787',
+    '#4DABF7',
+    '#38D9A9',
+    '#69DB7C',
+    '#748FFC',
+    '#D8F05E',
+    '#B197FC',
   ];
 
   chartOption = {};
@@ -56,35 +56,24 @@ export class PieChartComponent implements OnInit, OnDestroy {
   constructor(
     private centerSVC: CenterService
   ) {
-    // this.centerSVC.filter$
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe((res: any) => {
-    //     let data = [];
-    //     let sum = 0;
-    //     if (this.name === '各分類收入') {
-    //       res['data'].forEach(e => {
-    //         data.push(...e['income_detail']);
-    //         sum += e['total_income'];
-    //       })
-    //     } else if (this.name === '各分類支出') {
-    //       res['data'].forEach(e => {
-    //         data.push(...e['expend_detail']);
-    //         sum += e['total_expend'];
-    //       })
-    //     }
-    //     this.dataCalc(data, sum);
-    //   })
-
     this.centerSVC.rankData$
     .pipe(takeUntil(this.destroyed$))
     .subscribe((res: any) => {
       let data = res['data'];
       if (this.name === '各分類收入') {
-        let sum = data['income'].reduce((acc, cur) => acc + cur);
-        this.chartSetting2(data['income'], sum);
+        if(data['income'].length > 0) {
+          let sum = data['income'].reduce((acc, cur) => acc + cur);
+          this.chartSetting(data['income'], sum);
+        } else {
+          this.chartOption = {};
+        }
       } else if (this.name === '各分類支出') {
-        let sum = data['expend'].reduce((acc, cur) => acc + cur);
-        this.chartSetting2(data['expend'], sum);
+        if(data['expend'].length > 0) {
+          let sum = data['expend'].reduce((acc, cur) => acc + cur);
+          this.chartSetting(data['expend'], sum);
+        } else {
+          this.chartOption = {};
+        }
       }
     })
   }
@@ -106,7 +95,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
     // 自定義選單
     if (this.centerSVC.isCustomStatus) {
-      this.chartSetting2(this.data['default'], 100); // sum待調整
+      this.chartSetting(this.data['default'], 100); // sum待調整
     }
   }
 
@@ -115,111 +104,8 @@ export class PieChartComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  // 圖表設定(柱狀圖)
-  chartSetting(mergedData, sum) {
-    let dataArr = [];
-    mergedData.forEach((e, i) => {
-      dataArr.push(
-        {
-          name: e['category'],
-          value: e['value'],
-          itemStyle: {
-            color: '#fa0'
-          }
-        }
-      )
-    })
-
-    let temp = this.name === '各分類收入(圖表)' ? allIncomeCategory : allExpendCategory;
-    temp.forEach(category => {
-      // 检查 dataArr 中是否已有该项
-      let exists = dataArr.some(item => item.name === category);
-
-      // 如果没有该项，添加到 dataArr
-      if (!exists) {
-        dataArr.push({
-          name: category,
-          value: 0,
-          itemStyle: {
-            color: '#fa0'
-          }
-        });
-      }
-    });
-
-    this.chartOption = {
-      grid: {
-        left: '3%',
-        right: '3%',
-        bottom: '8%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          data: dataArr.map(e => e['name']),
-          axisTick: {
-            alignWithLabel: true
-          },
-          axisLabel: {
-            margin: 15,
-            textStyle: {
-              color: '#FFF',
-              fontFamily: 'Noto Sans CJK TC',
-              fontSize: '18px',
-              fontWeight: 'lighter',
-            },
-            interval: 0  // 顯示所有標籤
-          }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value',
-          axisLabel: {
-            textStyle: {
-              color: '#FFF',
-              fontFamily: 'Noto Sans CJK TC',
-              fontSize: '16px',
-              fontWeight: 'lighter'
-            }
-          },
-          splitLine: {
-            lineStyle: {
-              type: 'dashed',
-              opacity: 0.3
-            }
-          }
-        }
-      ],
-      series: [
-        {
-          type: 'bar',
-          barWidth: '20%',
-          categoryGap: '60%',
-          data: dataArr,
-          label: {
-            show: true,
-            distance: 10,
-            position: 'top',
-            textStyle: {
-              color: '#FFF',
-              fontFamily: 'Noto Sans CJK TC',
-              fontSize: '18px',
-              fontWeight: 'bold'
-            },
-            formatter: function (params) {
-              return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
-          },
-          showBackground: false,
-        },
-      ],
-    };
-  }
-
   // 圓餅圖
-  chartSetting2(mergedData, sum) {
+  chartSetting(mergedData, sum) {
     let dataArr = [];
     mergedData.forEach((e, i) => {
       dataArr.push({
@@ -231,23 +117,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
       })
     })
 
-    // let temp = this.name === '各分類收入' ? allIncomeCategory : allExpendCategory;
-    // temp.forEach(category => {
-    //   // 检查 dataArr 中是否已有该项
-    //   let exists = dataArr.some(item => item.name === category);
-
-    //   // 如果没有该项，添加到 dataArr
-    //   if (!exists) {
-    //     dataArr.push({
-    //       name: category,
-    //       value: 0,
-    //       itemStyle: {
-    //         color: '#fa0'
-    //       }
-    //     });
-    //   }
-    // });
-
     this.chartOption = {
       tooltip: {
         trigger: 'item',
@@ -255,7 +124,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
           type: 'shadow'
         },
         formatter: (params => {
-          // let result = `${params['marker']}${params['name']}：${params['data']['value']}元（${Math.round((params['data']['value'] / sum) * 100)}％）<br/>`
           let result = `${params['marker']}${params['name']}：${params['data']['value']}元（${(params['percent'])}％）<br/>`
           return result;
         })
@@ -271,6 +139,11 @@ export class PieChartComponent implements OnInit, OnDestroy {
           color: '#FFF',
           fontFamily: 'Noto Sans CJK TC',
           fontSize: '16px',
+        },
+        pageIconColor: '#FFF',
+        pageIconInactiveColor: '#555',
+        pageTextStyle: {
+          color: '#FFF',
         }
       },
       series: [

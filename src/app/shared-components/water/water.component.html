@@ -1,27 +1,4 @@
 <app-card [cardSetting]="card">
-  <!-- 水球圖 -->
-  <!-- <div class="container">
-    <div class="water-section">
-      <div class="text-section">
-        @if(rate >= 0) {
-        <span class="text" [ngStyle]="{'color': this.textColor, 'font-size': '3rem'}">{{rate}}</span>
-        <span class="text" [ngStyle]="{'color': this.textColor, 'font-size': '1.875rem'}">%</span>
-        }
-      </div>
-      <div [ngClass]="rate >= 0 ? 'text-section2' : 'text-section3'">
-        @if(rate >= 0) {
-        <span [ngStyle]="{color: rate > 25 ? '#011e4d' : '#F06449', 'font-size': '1rem', 'font-weight': 600}">
-          剩餘{{ monthBudget - monthExpend }}元
-        </span>
-        } @else {
-        <span [ngStyle]="{color: '#F06449', 'font-size': '1.25rem', 'font-weight': 600}">本月預算已超出</span>
-        }
-      </div>
-      <div echarts [options]="chartOptions" class="echart"></div>
-    </div>
-  </div> -->
-
-  <!-- 替代方案 -->
   <div class="container">
     <div class="water-section" [ngStyle]="{backgroundColor: this.waterColor2, 'border': '4px solid' + this.textColor}">
       <div class="text-section">

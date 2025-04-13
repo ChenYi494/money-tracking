@@ -34,12 +34,10 @@
     margin-top: 20px;
     margin-bottom: 20px;
     overflow: auto;
-    // border: 1px solid #fa0; // 測試用
 
     .container {
       // width: 90%;
       height: 100%;
-      // border: 1px solid #f10; // 測試用
 
       // 換行後置中設定(待優化)
       @media (min-width: 1754px) {

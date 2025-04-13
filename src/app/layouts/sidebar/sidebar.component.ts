@@ -6,7 +6,7 @@ import { CenterService } from '../../services/center.service';
 // rxjs
 import { Subscription } from 'rxjs';
 // ng-zorro
-import { NzContentComponent, NzLayoutComponent, NzSiderComponent } from 'ng-zorro-antd/layout';
+import { NzContentComponent, NzLayoutComponent } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -18,7 +18,6 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     RouterOutlet,
     RouterLink,
     NzLayoutComponent,
-    NzSiderComponent,
     NzContentComponent,
     NzMenuModule,
     NzIconModule,
