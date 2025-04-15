@@ -76,7 +76,11 @@ export class ApiService {
       },
       error: (err: any) => {
         console.log(err);
-        this.message.create('error', '資料有誤，請重新搜尋');
+        if(err['status'] === 401 && err['error']['message'] === 'Token has expired!') {
+          this.message.create('error', '驗證機制每兩小時過期，若想繼續瀏覽請重整網頁');
+        } else {
+          this.message.create('error', '資料有誤，請重新搜尋');
+        }
       },
     };
   }
